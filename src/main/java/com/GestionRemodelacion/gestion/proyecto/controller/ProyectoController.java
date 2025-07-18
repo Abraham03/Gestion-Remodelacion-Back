@@ -32,14 +32,14 @@ public class ProyectoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+   @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProyectoResponse>> getAllProyectos() {
         List<ProyectoResponse> proyectos = proyectoService.getAllProyectos();
         return ResponseEntity.ok(proyectos);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProyectoResponse> getProyectoById(@PathVariable Integer id) {
         ProyectoResponse proyecto = proyectoService.getProyectoById(id);
         return ResponseEntity.ok(proyecto);

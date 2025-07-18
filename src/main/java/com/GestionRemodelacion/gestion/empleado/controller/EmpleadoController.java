@@ -36,7 +36,7 @@ public class EmpleadoController {
 
     // *** MODIFICACIÓN PARA PAGINACIÓN ***
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Page<EmpleadoResponse>> getAllEmpleados( // Cambia el tipo de retorno a Page
             @PageableDefault(size = 10, page = 0, sort = "nombreCompleto") Pageable pageable) { // Inyecta Pageable
         Page<EmpleadoResponse> empleadosPage = empleadoService.getAllEmpleados(pageable);
@@ -44,7 +44,7 @@ public class EmpleadoController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EmpleadoResponse> getEmpleadoById(@PathVariable Integer id) {
         EmpleadoResponse empleado = empleadoService.getEmpleadoById(id);
         return ResponseEntity.ok(empleado);
