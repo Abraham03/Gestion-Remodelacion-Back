@@ -1,61 +1,72 @@
 package com.GestionRemodelacion.gestion.cliente.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException; // Importar Page
+import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.cliente.dto.request.ClienteRequest; // Importar Pageable
+import com.GestionRemodelacion.gestion.cliente.dto.request.ClienteRequest;
+import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteExportDTO;
 import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
 import com.GestionRemodelacion.gestion.cliente.model.Cliente;
 import com.GestionRemodelacion.gestion.cliente.repository.ClienteRepository;
 import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
+import com.GestionRemodelacion.gestion.mapper.ClienteMapper;
 
 @Service
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final ClienteMapper clienteMapper;
 
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository, ClienteMapper clienteMapper) {
         this.clienteRepository = clienteRepository;
-    }
-
-    // *** NUEVO MÉTODO PARA PAGINACIÓN DE CLIENTES ***
-    @Transactional(readOnly = true)
-    public Page<ClienteResponse> getAllClientes(Pageable pageable) {
-        return clienteRepository.findAll(pageable) // Usa findAll con Pageable
-                .map(this::convertToDto); // Mapea la Page de Cliente a Page de ClienteResponse
+        this.clienteMapper = clienteMapper;
     }
 
     @Transactional(readOnly = true)
-    public ClienteResponse getClienteById(Integer id) {
+    public Page<ClienteResponse> getAllClientes(Pageable pageable, String filter) {
+        Page<Cliente> clientesPage;
+        if (filter != null && !filter.trim().isEmpty()) {
+            clientesPage = clienteRepository.findByNombreClienteContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(filter, filter, pageable);
+        } else {
+            clientesPage = clienteRepository.findAll(pageable);
+        }
+        return clientesPage.map(clienteMapper::toClienteResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public ClienteResponse getClienteById(Long id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado con ID: " + id));
-        return convertToDto(cliente);
+        return clienteMapper.toClienteResponse(cliente);
     }
 
     @Transactional
     public ClienteResponse createCliente(ClienteRequest clienteRequest) {
-        Cliente cliente = new Cliente();
-        mapRequestToCliente(clienteRequest, cliente);
+        Cliente cliente = clienteMapper.toCliente(clienteRequest); // <-- Usa el mapper para request a entidad
         Cliente savedCliente = clienteRepository.save(cliente);
-        return convertToDto(savedCliente);
+        return clienteMapper.toClienteResponse(savedCliente);
     }
 
     @Transactional
-    public ClienteResponse updateCliente(Integer id, ClienteRequest clienteRequest) {
+    public ClienteResponse updateCliente(Long id, ClienteRequest clienteRequest) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado con ID: " + id));
 
-        mapRequestToCliente(clienteRequest, cliente);
+        clienteMapper.updateClienteFromRequest(clienteRequest, cliente);        
         Cliente updatedCliente = clienteRepository.save(cliente);
-        return convertToDto(updatedCliente);
+        return clienteMapper.toClienteResponse(updatedCliente);
     }
 
     @Transactional
-    public ApiResponse<Void> deleteCliente(Integer id) {
+    public ApiResponse<Void> deleteCliente(Long id) {
         if (!clienteRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado con ID: " + id);
         }
@@ -63,25 +74,29 @@ public class ClienteService {
         return new ApiResponse<>(HttpStatus.OK.value(), "Cliente eliminado exitosamente.", null);
     }
 
-    // Método auxiliar para mapear ClienteRequest a Cliente
-    private void mapRequestToCliente(ClienteRequest request, Cliente cliente) {
-        cliente.setNombreCliente(request.getNombreCliente());
-        cliente.setTelefonoContacto(request.getTelefonoContacto());
-        cliente.setDireccion(request.getDireccion());
-        cliente.setNotas(request.getNotas());
-        // La fecha_registro usualmente se setea en la entidad o en la DB directamente en el insert
-        // Si la manejas en el servicio, podrías añadir: cliente.setFechaRegistro(LocalDateTime.now());
-    }
+    // ⭐️ Nuevo método para exportación
+    @Transactional(readOnly = true)
+    public List<ClienteExportDTO> findClientesForExport(String filter, String sort) {
+        Sort sortObj = Sort.by(Sort.Direction.ASC, "nombreCliente"); // Orden por defecto
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParts = sort.split(",");
+            String sortProperty = sortParts[0];
+            Sort.Direction sortDirection = "desc".equalsIgnoreCase(sortParts[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
+            sortObj = Sort.by(sortDirection, sortProperty);
+        }
 
-    // Método auxiliar para convertir Entidad a DTO
-    private ClienteResponse convertToDto(Cliente cliente) {
-        return new ClienteResponse(
-                cliente.getId(),
-                cliente.getNombreCliente(),
-                cliente.getTelefonoContacto(),
-                cliente.getDireccion(),
-                cliente.getNotas(),
-                cliente.getFechaRegistro()
-        );
-    }
+        List<Cliente> clientes;
+        if (filter != null && !filter.trim().isEmpty()) {
+            // Lógica de filtrado y ordenamiento en el repositorio.
+            // Es necesario añadir un método en ClienteRepository para esto.
+            clientes = clienteRepository.findByNombreClienteContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(filter, filter, sortObj);
+        } else {
+            clientes = clienteRepository.findAll(sortObj);
+        }
+
+        return clientes.stream()
+                .map(ClienteExportDTO::new)
+                .collect(Collectors.toList());
+    }    
+
 }

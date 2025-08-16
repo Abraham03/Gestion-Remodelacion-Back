@@ -7,8 +7,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
@@ -32,7 +30,6 @@ import io.jsonwebtoken.security.SignatureException;
 @Component
 public class JwtUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
     private final JwtProperties jwtProperties;
     private final Key key;
 
@@ -81,7 +78,6 @@ public class JwtUtils {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
         } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException e) {
-            logger.error("Error validando token: {}", e.getMessage());
             return false;
         }
     }
@@ -92,6 +88,20 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+        // ✅ Nuevo método para obtener la fecha de expiración de un token caducado
+    public Date getExpirationDateFromExpiredToken(String token) {
+        try {
+            // Intenta parsear el token, si falla con ExpiredJwtException, decodifica el cuerpo
+            return extractClaim(token, Claims::getExpiration);
+        } catch (ExpiredJwtException e) {
+            // Si el token ha expirado, podemos obtener la información directamente de la excepción
+            return e.getClaims().getExpiration();
+        } catch (Exception e) {
+            // Para cualquier otra excepción (ej. malformed token), puedes manejarlo como desees
+            throw new RuntimeException("Error al extraer la fecha de expiración del token", e);
+        }
     }
 
     public Date getExpirationDateFromToken(String token) {
@@ -112,7 +122,6 @@ public class JwtUtils {
         try {
             return Optional.of(extractAllClaims(token));
         } catch (Exception e) {
-            logger.warn("Error al extraer claims del token: {}", e.getMessage());
             return Optional.empty();
         }
     }

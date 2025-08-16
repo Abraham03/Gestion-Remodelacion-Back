@@ -1,7 +1,7 @@
 package com.GestionRemodelacion.gestion.proyecto.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,36 +32,36 @@ public class ProyectoController {
     }
 
     @GetMapping
-   @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ProyectoResponse>> getAllProyectos() {
-        List<ProyectoResponse> proyectos = proyectoService.getAllProyectos();
-        return ResponseEntity.ok(proyectos);
+    @PreAuthorize("hasAuthority('PROYECTO_READ')") 
+    public ResponseEntity<ApiResponse<Page<ProyectoResponse>>> getAllProyectos( Pageable pageable) {
+        Page<ProyectoResponse> proyectosPage = proyectoService.getAllProyectos(pageable); 
+        return ResponseEntity.ok(ApiResponse.success(proyectosPage));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProyectoResponse> getProyectoById(@PathVariable Integer id) {
+    @PreAuthorize("hasAuthority('PROYECTO_READ')") 
+    public ResponseEntity<ProyectoResponse> getProyectoById(@PathVariable Long id) {
         ProyectoResponse proyecto = proyectoService.getProyectoById(id);
         return ResponseEntity.ok(proyecto);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('PROYECTO_CREATE')")
     public ResponseEntity<ProyectoResponse> createProyecto(@Valid @RequestBody ProyectoRequest proyectoRequest) {
         ProyectoResponse createdProyecto = proyectoService.createProyecto(proyectoRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProyecto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProyectoResponse> updateProyecto(@PathVariable Integer id, @Valid @RequestBody ProyectoRequest proyectoRequest) {
+    @PreAuthorize("hasAuthority('PROYECTO_UPDATE')") 
+    public ResponseEntity<ProyectoResponse> updateProyecto(@PathVariable Long id, @Valid @RequestBody ProyectoRequest proyectoRequest) {
         ProyectoResponse updatedProyecto = proyectoService.updateProyecto(id, proyectoRequest);
         return ResponseEntity.ok(updatedProyecto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteProyecto(@PathVariable Integer id) {
+    @PreAuthorize("hasAuthority('PROYECTO_DELETE')") 
+    public ResponseEntity<ApiResponse<Void>> deleteProyecto(@PathVariable Long id) {
         proyectoService.deleteProyecto(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

@@ -6,10 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
 import com.GestionRemodelacion.gestion.dto.response.DashboardSummaryResponse;
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
 import com.GestionRemodelacion.gestion.service.dashboard.DashboardService;
 
 @RestController
@@ -18,22 +19,22 @@ public class DashboardController {
 
     private final DashboardService dashboardService;
 
-    // Inyección de dependencias a través del constructor (sin @RequiredArgsConstructor)
     public DashboardController(DashboardService dashboardService) {
         this.dashboardService = dashboardService;
     }
 
     @GetMapping("/summary")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<DashboardSummaryResponse> getDashboardSummary() {
-        DashboardSummaryResponse summary = dashboardService.getDashboardSummary();
-        return ResponseEntity.ok(summary);
+    @PreAuthorize("hasAuthority('DASHBOARD_VIEW')") 
+    public ResponseEntity<ApiResponse<DashboardSummaryResponse>> getDashboardSummary(@RequestParam(name = "year", required = false) Integer year) {
+        DashboardSummaryResponse summary = dashboardService.getDashboardSummary(year);
+        return ResponseEntity.ok(ApiResponse.success(summary));
     }
 
-    @GetMapping("/proyectos-en-curso")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Proyecto>> getProyectosEnCurso() {
-        List<Proyecto> proyectos = dashboardService.getProyectosEnCurso();
-        return ResponseEntity.ok(proyectos);
+    // ✅ CAMBIO: Nuevo endpoint para obtener solo los años.
+    @GetMapping("/years")
+    @PreAuthorize("hasAuthority('DASHBOARD_VIEW')")
+    public ResponseEntity<ApiResponse<List<Integer>>> getAvailableYears() {
+        List<Integer> years = dashboardService.getAvailableYears();
+        return ResponseEntity.ok(ApiResponse.success(years));
     }
 }

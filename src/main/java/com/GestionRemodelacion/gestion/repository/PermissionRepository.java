@@ -1,5 +1,8 @@
 package com.GestionRemodelacion.gestion.repository;
 
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,6 +11,7 @@ import com.GestionRemodelacion.gestion.model.Permission;
 @Repository
 public interface  PermissionRepository extends JpaRepository<Permission, Long>{
 
-    Permission findByName(String name);
+    Optional<Permission> findByName(String name);
+    Boolean existsByName(String name);
 
 }

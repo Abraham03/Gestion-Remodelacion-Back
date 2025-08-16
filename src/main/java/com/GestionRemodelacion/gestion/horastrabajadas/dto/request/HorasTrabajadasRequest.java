@@ -8,10 +8,10 @@ import jakarta.validation.constraints.NotNull; // Make sure this is LocalDate
 public class HorasTrabajadasRequest {
 
     @NotNull(message = "El ID del empleado no puede ser nulo")
-    private Integer idEmpleado;
+    private Long idEmpleado;
 
     @NotNull(message = "El ID del proyecto no puede ser nulo")
-    private Integer idProyecto;
+    private Long idProyecto;
 
     @NotNull(message = "La fecha no puede ser nula")
     private LocalDate fecha; // Ensure this is LocalDate
@@ -25,7 +25,7 @@ public class HorasTrabajadasRequest {
     public HorasTrabajadasRequest() {
     }
 
-    public HorasTrabajadasRequest(Integer idEmpleado, Integer idProyecto, LocalDate fecha, BigDecimal horas, String actividadRealizada) {
+    public HorasTrabajadasRequest(Long idEmpleado, Long idProyecto, LocalDate fecha, BigDecimal horas, String actividadRealizada) {
         this.idEmpleado = idEmpleado;
         this.idProyecto = idProyecto;
         this.fecha = fecha;
@@ -34,19 +34,19 @@ public class HorasTrabajadasRequest {
     }
 
     // Getters y Setters
-    public Integer getIdEmpleado() {
+    public Long getIdEmpleado() {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(Integer idEmpleado) {
+    public void setIdEmpleado(Long idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
 
-    public Integer getIdProyecto() {
+    public Long getIdProyecto() {
         return idProyecto;
     }
 
-    public void setIdProyecto(Integer idProyecto) {
+    public void setIdProyecto(Long idProyecto) {
         this.idProyecto = idProyecto;
     }
 

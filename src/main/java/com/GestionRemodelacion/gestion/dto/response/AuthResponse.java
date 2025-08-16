@@ -11,15 +11,17 @@ public class AuthResponse {
     private final Long id;
     private final String username;
     private final List<String> authorities;
+    private final List<String> roles;
     private final Date expirationDate;
     private final String refreshToken;
     
 
-    public AuthResponse(String token, Long id, String username, List<String> authorities, Date expirationDate, String refreshToken) {
+    public AuthResponse(String token, Long id, String username, List<String> authorities,List<String> roles, Date expirationDate, String refreshToken) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.authorities = authorities;
+        this.roles = roles;
         this.expirationDate = expirationDate;
         this.refreshToken = refreshToken;
     }
@@ -37,4 +39,9 @@ public class AuthResponse {
     }
     public String getRefreshToken() { return refreshToken; }
 
+
+
+    public List<String> getRoles() {
+        return roles;
+    }
 }

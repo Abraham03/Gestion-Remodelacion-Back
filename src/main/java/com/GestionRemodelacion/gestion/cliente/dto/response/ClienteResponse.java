@@ -1,17 +1,16 @@
 package com.GestionRemodelacion.gestion.cliente.dto.response;
 
 import java.time.LocalDateTime;
-
 public class ClienteResponse {
 
-    private Integer id;
+    private Long id;
     private String nombreCliente;
     private String telefonoContacto;
     private String direccion;
     private String notas;
     private LocalDateTime fechaRegistro;
 
-    public ClienteResponse(Integer id, String nombreCliente, String telefonoContacto, String direccion, String notas, LocalDateTime fechaRegistro) {
+    public ClienteResponse(Long id, String nombreCliente, String telefonoContacto, String direccion, String notas, LocalDateTime fechaRegistro) {
         this.id = id;
         this.nombreCliente = nombreCliente;
         this.telefonoContacto = telefonoContacto;
@@ -20,12 +19,13 @@ public class ClienteResponse {
         this.fechaRegistro = fechaRegistro;
     }
 
+
     // Getters y Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

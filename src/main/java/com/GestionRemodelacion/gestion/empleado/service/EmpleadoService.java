@@ -1,7 +1,11 @@
 package com.GestionRemodelacion.gestion.empleado.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,57 +13,66 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
 import com.GestionRemodelacion.gestion.empleado.dto.request.EmpleadoRequest;
+import com.GestionRemodelacion.gestion.empleado.dto.response.EmpleadoExportDTO;
 import com.GestionRemodelacion.gestion.empleado.dto.response.EmpleadoResponse;
 import com.GestionRemodelacion.gestion.empleado.model.Empleado;
 import com.GestionRemodelacion.gestion.empleado.repository.EmpleadoRepository;
+import com.GestionRemodelacion.gestion.mapper.EmpleadoMapper;
 
 @Service
 public class EmpleadoService {
 
     private final EmpleadoRepository empleadoRepository;
+    private final EmpleadoMapper empleadoMapper;
 
-    public EmpleadoService(EmpleadoRepository empleadoRepository) {
+    public EmpleadoService(EmpleadoRepository empleadoRepository, EmpleadoMapper empleadoMapper) {
         this.empleadoRepository = empleadoRepository;
+        this.empleadoMapper = empleadoMapper;
     }
 
     // *** MODIFICACIÓN PARA PAGINACIÓN ***
     @Transactional(readOnly = true)
-    public Page<EmpleadoResponse> getAllEmpleados(Pageable pageable) {
-        return empleadoRepository.findAll(pageable)
-                .map(this::convertToDto);
+    public Page<EmpleadoResponse> getAllEmpleados(Pageable pageable, String filter) {
+        Page<Empleado> empleadosPage;
+        if (filter != null && !filter.trim().isEmpty()) {
+            // ⭐️ MODIFICADO: Usa el nuevo método del repositorio para filtrar
+            empleadosPage = empleadoRepository.findByNombreCompletoContainingIgnoreCaseOrRolCargoContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(filter, filter, filter, pageable);
+        } else {
+            empleadosPage = empleadoRepository.findAll(pageable);
+        }
+        return empleadosPage.map(empleadoMapper::toEmpleadoResponse);
     }
 
     @Transactional(readOnly = true)
-    public EmpleadoResponse getEmpleadoById(Integer id) {
+    public EmpleadoResponse getEmpleadoById(Long id) {
         Empleado empleado = empleadoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empleado no encontrado con ID: " + id));
-        return convertToDto(empleado);
+        return empleadoMapper.toEmpleadoResponse(empleado);
     }
 
     @Transactional
     public EmpleadoResponse createEmpleado(EmpleadoRequest empleadoRequest) {
-        Empleado empleado = new Empleado();
-        mapRequestToEmpleado(empleadoRequest, empleado);
+        Empleado empleado = empleadoMapper.toEmpleado(empleadoRequest);
         if (empleado.getActivo() == null) {
             empleado.setActivo(true);
         }
         // fechaRegistro will be set automatically by @PrePersist in Empleado model
         Empleado savedEmpleado = empleadoRepository.save(empleado);
-        return convertToDto(savedEmpleado);
+        return empleadoMapper.toEmpleadoResponse(savedEmpleado);
     }
 
     @Transactional
-    public EmpleadoResponse updateEmpleado(Integer id, EmpleadoRequest empleadoRequest) {
+    public EmpleadoResponse updateEmpleado(Long id, EmpleadoRequest empleadoRequest) {
         Empleado empleado = empleadoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empleado no encontrado con ID: " + id));
 
-        mapRequestToEmpleado(empleadoRequest, empleado);
+        empleadoMapper.updateEmpleadoFromRequest(empleadoRequest, empleado);
         Empleado updatedEmpleado = empleadoRepository.save(empleado);
-        return convertToDto(updatedEmpleado);
+        return empleadoMapper.toEmpleadoResponse(updatedEmpleado);
     }
 
     @Transactional
-    public ApiResponse<Void> changeEmpleadoStatus(Integer id, Boolean activo) {
+    public ApiResponse<Void> changeEmpleadoStatus(Long id, Boolean activo) {
         Empleado empleado = empleadoRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Empleado no encontrado con ID: " + id));
 
@@ -74,12 +87,12 @@ public class EmpleadoService {
     }
 
     @Transactional
-    public ApiResponse<Void> deactivateEmpleado(Integer id) {
+    public ApiResponse<Void> deactivateEmpleado(Long id) {
         return changeEmpleadoStatus(id, false);
     }
 
     @Transactional
-    public ApiResponse<Void> deleteEmpleado(Integer id) {
+    public ApiResponse<Void> deleteEmpleado(Long id) {
         if (!empleadoRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empleado no encontrado con ID: " + id);
         }
@@ -87,30 +100,33 @@ public class EmpleadoService {
         return new ApiResponse<>(HttpStatus.OK.value(), "Empleado eliminado físicamente de la base de datos.", null);
     }
 
-    private void mapRequestToEmpleado(EmpleadoRequest request, Empleado empleado) {
-        empleado.setNombreCompleto(request.getNombreCompleto());
-        empleado.setRolCargo(request.getRolCargo());
-        empleado.setTelefonoContacto(request.getTelefonoContacto());
-        empleado.setFechaContratacion(request.getFechaContratacion());
-        empleado.setCostoPorHora(request.getCostoPorHora());
-        if (request.getActivo() != null) {
-            empleado.setActivo(request.getActivo());
+    // ⭐️ NUEVO: Método para la exportación
+    @Transactional(readOnly = true)
+    public List<EmpleadoExportDTO> findEmpleadosForExport(String filter, String sort) {
+        Sort sortObj = Sort.by(Sort.Direction.ASC, "nombreCompleto"); // Orden por defecto
+        if (sort != null && !sort.isEmpty()) {
+            try {
+                String[] sortParts = sort.split(",");
+                if(sortParts.length == 2) {
+                    String sortProperty = sortParts[0];
+                    Sort.Direction sortDirection = "desc".equalsIgnoreCase(sortParts[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
+                    sortObj = Sort.by(sortDirection, sortProperty);
+                }
+            } catch (Exception e) {
+                // Manejar error de parseo, si es necesario, o mantener el sort por defecto
+            }
         }
-        empleado.setNotas(request.getNotas());
-        // Do NOT set fechaRegistro from request, it's an internal timestamp
-    }
 
-    private EmpleadoResponse convertToDto(Empleado empleado) {
-        return new EmpleadoResponse(
-                empleado.getId(),
-                empleado.getNombreCompleto(),
-                empleado.getRolCargo(),
-                empleado.getTelefonoContacto(),
-                empleado.getFechaContratacion(), // This is LocalDate
-                empleado.getCostoPorHora(),
-                empleado.getActivo(),
-                empleado.getNotas(),
-                empleado.getFechaRegistro() // This is now LocalDateTime
-        );
-    }
+        List<Empleado> empleados;
+        if (filter != null && !filter.trim().isEmpty()) {
+            empleados = empleadoRepository.findByNombreCompletoContainingIgnoreCaseOrRolCargoContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(filter, filter, filter, sortObj);
+        } else {
+            empleados = empleadoRepository.findAll(sortObj);
+        }
+
+        return empleados.stream()
+                .map(EmpleadoExportDTO::new)
+                .collect(Collectors.toList());
+    }    
+
 }

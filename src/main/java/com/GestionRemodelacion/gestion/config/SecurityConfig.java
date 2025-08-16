@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -70,8 +71,58 @@ public class SecurityConfig {
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/swagger-ui.html"
-                ).permitAll()
-                .requestMatchers("/api/roles/**").hasRole("ADMIN")
+                ).permitAll() 
+                
+                // --- Rutas protegidas por permisos/roles usando hasAuthority() ---
+                // Uso de HttpMethod.GET, HttpMethod.POST, etc. para evitar warnings futuros.
+
+                // Dashboard: requiere el permiso DASHBOARD_VIEW
+                .requestMatchers("/api/dashboard/**").hasAuthority("DASHBOARD_VIEW")
+
+                // Usuarios: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("USER_READ")
+                .requestMatchers(HttpMethod.POST, "/api/users/**").hasAuthority("USER_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAuthority("USER_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("USER_DELETE")
+
+                // Roles: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/roles/**").hasAuthority("ROLE_READ")
+                .requestMatchers(HttpMethod.POST, "/api/roles/**").hasAuthority("ROLE_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/roles/**").hasAuthority("ROLE_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/roles/**").hasAuthority("ROLE_DELETE")
+
+                // Permisos: (si tuvieras un controlador para gestionar permisos)
+                .requestMatchers(HttpMethod.GET, "/api/permissions/**").hasAuthority("PERMISSION_READ")
+                .requestMatchers(HttpMethod.POST, "/api/permissions/**").hasAuthority("PERMISSION_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/permissions/**").hasAuthority("PERMISSION_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/permissions/**").hasAuthority("PERMISSION_DELETE")
+                
+                // Proyectos: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/proyectos/**").hasAuthority("PROYECTO_READ")
+                .requestMatchers(HttpMethod.POST, "/api/proyectos/**").hasAuthority("PROYECTO_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/proyectos/**").hasAuthority("PROYECTO_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/proyectos/**").hasAuthority("PROYECTO_DELETE")
+
+                // Clientes: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/clientes/**").hasAuthority("CLIENTE_READ")
+                .requestMatchers(HttpMethod.POST, "/api/clientes/**").hasAuthority("CLIENTE_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/clientes/**").hasAuthority("CLIENTE_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/clientes/**").hasAuthority("CLIENTE_DELETE")
+
+                // Empleados: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/empleados/**").hasAuthority("EMPLEADO_READ")
+                .requestMatchers(HttpMethod.POST, "/api/empleados/**").hasAuthority("EMPLEADO_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/empleados/**").hasAuthority("EMPLEADO_UPDATE")
+                .requestMatchers(HttpMethod.PATCH, "/api/empleados/{id}/status").hasAuthority("EMPLEADO_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/empleados/**").hasAuthority("EMPLEADO_DELETE")
+
+                // Horas Trabajadas: cada operación requiere un permiso específico
+                .requestMatchers(HttpMethod.GET, "/api/horas-trabajadas/**").hasAuthority("HORASTRABAJADAS_READ")
+                .requestMatchers(HttpMethod.POST, "/api/horas-trabajadas/**").hasAuthority("HORASTRABAJADAS_CREATE")
+                .requestMatchers(HttpMethod.PUT, "/api/horas-trabajadas/**").hasAuthority("HORASTRABAJADAS_UPDATE")
+                .requestMatchers(HttpMethod.DELETE, "/api/horas-trabajadas/**").hasAuthority("HORASTRABAJADAS_DELETE")
+
+                // Cualquier otra solicitud debe estar autenticada
                 .anyRequest().authenticated()
             )
             .addFilterBefore(rateLimitFilter, LogoutFilter.class)
