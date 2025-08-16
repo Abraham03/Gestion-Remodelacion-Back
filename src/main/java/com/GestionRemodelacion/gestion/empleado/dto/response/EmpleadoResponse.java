@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime; 
 
 public class EmpleadoResponse {
-    private Integer id;
+    private Long id;
     private String nombreCompleto;
     private String rolCargo;
     private String telefonoContacto;
@@ -14,7 +14,7 @@ public class EmpleadoResponse {
     private String notas;
     private LocalDateTime fechaRegistro; 
 
-    public EmpleadoResponse(Integer id, String nombreCompleto, String rolCargo, String telefonoContacto,
+    public EmpleadoResponse(Long id, String nombreCompleto, String rolCargo, String telefonoContacto,
                             LocalDate fechaContratacion, BigDecimal costoPorHora,
                             Boolean activo, String notas, LocalDateTime fechaRegistro) { 
         this.id = id;
@@ -45,11 +45,11 @@ public class EmpleadoResponse {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

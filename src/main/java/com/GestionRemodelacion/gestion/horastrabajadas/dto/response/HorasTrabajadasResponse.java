@@ -6,17 +6,17 @@ import java.time.LocalDateTime; // Importar LocalDateTime
 
 public class HorasTrabajadasResponse {
 
-    private Integer id;
-    private Integer idEmpleado;
+    private Long id;
+    private Long idEmpleado;
     private String nombreEmpleado; // Para mostrar el nombre del empleado
-    private Integer idProyecto;
+    private Long idProyecto;
     private String nombreProyecto; // Para mostrar el nombre del proyecto
     private LocalDate fecha; // Cambiado a LocalDate
     private BigDecimal horas;
     private String actividadRealizada;
     private LocalDateTime fechaRegistro; // Cambiado a LocalDateTime
 
-    public HorasTrabajadasResponse(Integer id, Integer idEmpleado, String nombreEmpleado, Integer idProyecto,
+    public HorasTrabajadasResponse(Long id, Long idEmpleado, String nombreEmpleado, Long idProyecto,
                                    String nombreProyecto, LocalDate fecha, BigDecimal horas, String actividadRealizada,
                                    LocalDateTime fechaRegistro) { // Constructor con LocalDate y LocalDateTime
         this.id = id;
@@ -31,19 +31,19 @@ public class HorasTrabajadasResponse {
     }
 
     // Getters y Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getIdEmpleado() {
+    public Long getIdEmpleado() {
         return idEmpleado;
     }
 
-    public void setIdEmpleado(Integer idEmpleado) {
+    public void setIdEmpleado(Long idEmpleado) {
         this.idEmpleado = idEmpleado;
     }
 
@@ -55,11 +55,11 @@ public class HorasTrabajadasResponse {
         this.nombreEmpleado = nombreEmpleado;
     }
 
-    public Integer getIdProyecto() {
+    public Long getIdProyecto() {
         return idProyecto;
     }
 
-    public void setIdProyecto(Integer idProyecto) {
+    public void setIdProyecto(Long idProyecto) {
         this.idProyecto = idProyecto;
     }
 

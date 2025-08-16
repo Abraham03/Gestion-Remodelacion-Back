@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.GestionRemodelacion.gestion.model.RefreshToken;
+import com.GestionRemodelacion.gestion.model.User;
 
 import jakarta.persistence.QueryHint;
 
@@ -37,5 +38,9 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     int markAllAsUsedByUserId(@Param("userId") Long userId);
     
     boolean existsByToken(String token);
+
+    @Modifying
+    @Query("DELETE FROM RefreshToken rt WHERE rt.user = :user")
+    void deleteByUser(@Param("user") User user);
 
 }

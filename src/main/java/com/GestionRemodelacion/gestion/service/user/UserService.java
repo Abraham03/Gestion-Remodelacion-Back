@@ -1,133 +1,155 @@
 package com.GestionRemodelacion.gestion.service.user;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.request.SignupRequest;
+import com.GestionRemodelacion.gestion.dto.request.UserRequest;
+import com.GestionRemodelacion.gestion.dto.response.UserResponse;
+import com.GestionRemodelacion.gestion.mapper.UserMapper;
 import com.GestionRemodelacion.gestion.model.Role;
 import com.GestionRemodelacion.gestion.model.User;
+import com.GestionRemodelacion.gestion.repository.RefreshTokenRepository;
 import com.GestionRemodelacion.gestion.repository.RoleRepository;
 import com.GestionRemodelacion.gestion.repository.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 /**
  * Servicio para manejar la lógica de negocio relacionada con usuarios.
  */
 @Service
 public class UserService {
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
+    private final RefreshTokenRepository refreshTokenRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, RefreshTokenRepository refreshTokenRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserResponse> findAll(Pageable pageable, String searchTerm) {
+        log.info("Fetching all users with searchTerm: {}", searchTerm); // New log
+        Page<User> usersPage;
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            usersPage = userRepository.findByUsernameContainingIgnoreCase(searchTerm, pageable);
+        } else {
+            usersPage = userRepository.findAll(pageable);
+        }
+        log.debug("Found {} users on page {}.", usersPage.getTotalElements(), pageable.getPageNumber()); // New log
+
+        return usersPage.map(userMapper::toDto);
+    }   
+
+
+    @Transactional(readOnly = true)
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        return userMapper.toDto(user);
+    }  
+
+    @Transactional
+     public UserResponse createUser(UserRequest userRequest) {
+        User user = userMapper.toEntity(userRequest);
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword())); // Encode password
+        user.setEnabled(userRequest.isEnabled()); // Set enabled status
+
+        Set<Role> roles = userRequest.getRoles().stream()
+            .map(roleId -> roleRepository.findById(roleId)
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId)))
+            .collect(Collectors.toSet());
+        user.setRoles(roles);
+
+        User savedUser = userRepository.save(user);
+        return userMapper.toDto(savedUser);
     }
 
     @Transactional
-    public User createUser(SignupRequest signUpRequest) {
-        // Crear nuevo usuario
-        User user = new User();
-        user.setUsername(signUpRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+   public UserResponse updateUser(Long id, UserRequest userRequest) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
-        // Asignar roles
-        Set<Role> roles = new HashSet<>();
-        
-        if (signUpRequest.getRoles() == null || signUpRequest.getRoles().isEmpty()) {
-            // Asignar rol por defecto (USER)
-            Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new RuntimeException("Error: Rol USER no encontrado."));
-            roles.add(userRole);
-        } else {
-            // Asignar roles especificados en la solicitud
-            signUpRequest.getRoles().forEach(role -> {
-                Role foundRole = roleRepository.findByName(role)
-                    .orElseThrow(() -> new RuntimeException("Error: Rol " + role + " no encontrado."));
-                roles.add(foundRole);
-            });
+        existingUser.setUsername(userRequest.getUsername());
+        existingUser.setEnabled(userRequest.isEnabled()); // Update enabled status
+
+        // Only update password if provided in the request
+        if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         }
 
-        user.setRoles(roles);
-        return userRepository.save(user);
+        // Update roles based on provided roleIds
+        Set<Role> updatedRoles = new HashSet<>();
+        if (userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()) {
+            updatedRoles = userRequest.getRoles().stream()
+                .map(roleId -> roleRepository.findById(roleId)
+                    .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId)))
+                .collect(Collectors.toSet());
+        }
+        existingUser.setRoles(updatedRoles);
+
+        User updatedUser = userRepository.save(existingUser);
+        return userMapper.toDto(updatedUser);
     }
 
-    /**
-     * Guarda un nuevo usuario en la base de datos.
-     *
-     * @param user Usuario a guardar
-     * @return Usuario guardado
-     */
     @Transactional
-    public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+public void deleteById(Long id) {
+    // 1. Verificar si el usuario existe para lanzar una excepción si no es así.
+    User user = userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + id));
+
+    // 2. Eliminar todos los tokens de actualización asociados a este usuario.
+    // Esto previene el error de clave foránea.
+    refreshTokenRepository.deleteByUser(user); // Asumo que tienes este método en tu RefreshTokenRepository
+
+    // 3. Ahora que las dependencias han sido eliminadas, puedes eliminar al usuario.
+    userRepository.delete(user);
+}
+
+    @Transactional
+    public UserResponse updateUserRoles(Long id, Set<String> roleNames) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+
+        Set<Role> newRoles = roleNames.stream()
+                .map(roleName -> roleRepository.findByName(roleName) // Assuming findByName exists in RoleRepository
+                        .orElseThrow(() -> new EntityNotFoundException("Role not found with name: " + roleName)))
+                .collect(Collectors.toSet());
+
+        existingUser.setRoles(newRoles);
+        User updatedUser = userRepository.save(existingUser);
+        return userMapper.toDto(updatedUser);
     }
 
-    /**
-     * Busca un usuario por su nombre de usuario.
-     *
-     * @param username Nombre de usuario
-     * @return Optional con el usuario encontrado
-     */
+    // Puedes mantener este método si es necesario para autenticación o casos específicos
     @Transactional(readOnly = true)
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    /**
-     * Busca un usuario por su id de usuario.
-     *
-     * @param id Nombre de usuario
-     * @return Optional con el usuario encontrado
-     */
-    @Transactional(readOnly = true)
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    /**
-     * Verifica si existe un usuario con el nombre de usuario dado.
-     *
-     * @param username Nombre de usuario
-     * @return true si existe, false en caso contrario
-     */
     @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
-    }
-
-    /**
-     * Asigna roles a un usuario.
-     *
-     * @param userId ID del usuario
-     * @param roles Conjunto de roles a asignar
-     * @return Usuario actualizado
-     */
-    @Transactional
-    public User assignRolesToUser(Long userId, Set<Role> roles) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        user.getRoles().addAll(roles);
-        return userRepository.save(user);
-    }
-
-    /**
-     * Obtiene todos los usuarios.
-     *
-     * @return Lista de usuarios
-     */
-    @Transactional(readOnly = true)
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
+    }     
 
 }

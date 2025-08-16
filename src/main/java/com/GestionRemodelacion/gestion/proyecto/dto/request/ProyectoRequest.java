@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 public class ProyectoRequest {
 
     @NotNull(message = "El ID del cliente es obligatorio")
-    private Integer idCliente;
+    private Long idCliente;
 
     @NotBlank(message = "El nombre del proyecto es obligatorio")
     private String nombreProyecto;
@@ -37,7 +37,7 @@ public class ProyectoRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaFinalizacionReal;
 
-    private Integer idEmpleadoResponsable;
+    private Long idEmpleadoResponsable;
 
     @NotNull(message = "El monto del contrato es obligatorio")
     @DecimalMin(value = "0.00", message = "El monto del contrato no puede ser negativo")
@@ -70,11 +70,11 @@ public class ProyectoRequest {
     }
 
     // Getters y Setters
-    public Integer getIdCliente() {
+    public Long getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(Integer idCliente) {
+    public void setIdCliente(Long idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -134,11 +134,11 @@ public class ProyectoRequest {
         this.fechaFinalizacionReal = fechaFinalizacionReal;
     }
 
-    public Integer getIdEmpleadoResponsable() {
+    public Long getIdEmpleadoResponsable() {
         return idEmpleadoResponsable;
     }
 
-    public void setIdEmpleadoResponsable(Integer idEmpleadoResponsable) {
+    public void setIdEmpleadoResponsable(Long idEmpleadoResponsable) {
         this.idEmpleadoResponsable = idEmpleadoResponsable;
     }
 

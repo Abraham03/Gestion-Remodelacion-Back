@@ -1,13 +1,13 @@
 package com.GestionRemodelacion.gestion.service.impl;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.GestionRemodelacion.gestion.model.Permission;
 import com.GestionRemodelacion.gestion.model.User;
 
 /**
@@ -28,14 +28,17 @@ public class UserDetailsImpl implements UserDetails {
     private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> userRoles; // 👈 SE AGREGA: Colección para solo los roles
+
 
     // Constructor principal
     public UserDetailsImpl(Long id, String username, String password, 
-                         Collection<? extends GrantedAuthority> authorities) {
+                         Collection<? extends GrantedAuthority> authorities, Collection<? extends GrantedAuthority> userRoles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
+        this.userRoles = userRoles;
     }
 
     /**
@@ -45,21 +48,41 @@ public class UserDetailsImpl implements UserDetails {
      * - Asegura que cada rol tenga el prefijo "ROLE_" si no lo tiene
      */
     public static UserDetailsImpl build(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(
-                    role.getName().startsWith("ROLE_") ? 
-                    role.getName() : "ROLE_" + role.getName()))
-                .collect(Collectors.toList());
+        Set<GrantedAuthority> authorities = new java.util.HashSet<>();
+        Set<GrantedAuthority> userRoles = new java.util.HashSet<>();        
+
+        // 1. Recopilar roles y agregarlos a ambas colecciones
+        user.getRoles().forEach(role -> {
+            String roleName = role.getName();
+            if (!roleName.startsWith("ROLE_")) {
+                roleName = "ROLE_" + roleName;
+            }
+            authorities.add(new SimpleGrantedAuthority(roleName));
+            userRoles.add(new SimpleGrantedAuthority(roleName));
+        });        
+        // 2. Recopilar permisos y agregarlos solo a la colección de authorities
+        user.getRoles().stream()
+            .flatMap(role -> role.getPermissions().stream())
+            .map(Permission::getName)
+            .map(SimpleGrantedAuthority::new)
+            .forEach(authorities::add);
 
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
                 user.getPassword(),
-                authorities);
+                authorities,
+                userRoles
+                );
     }
 
     // Getters y métodos requeridos por UserDetails
     public Long getId() { return id; }
+
+    // ⭐️ SE AGREGA: Nuevo getter para los roles
+    public Collection<? extends GrantedAuthority> getUserRoles() {
+        return userRoles;
+    }    
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

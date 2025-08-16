@@ -8,8 +8,8 @@ import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
 
 public class ProyectoResponse {
 
-    private Integer id;
-    private Integer idCliente;
+    private Long id;
+    private Long idCliente;
     private String nombreCliente; // Para mostrar el nombre del cliente en el DTO
     private String nombreProyecto;
     private String descripcion;
@@ -18,7 +18,7 @@ public class ProyectoResponse {
     private LocalDate fechaInicio;
     private LocalDate fechaFinEstimada;
     private LocalDate fechaFinalizacionReal;
-    private Integer idEmpleadoResponsable;
+    private Long idEmpleadoResponsable;
     private String nombreEmpleadoResponsable; // Para mostrar el nombre del empleado
     private BigDecimal montoContrato;
     private BigDecimal montoRecibido;
@@ -29,9 +29,9 @@ public class ProyectoResponse {
     private String notasProyecto;
     private LocalDateTime fechaCreacion;
 
-    public ProyectoResponse(Integer id, Integer idCliente, String nombreCliente, String nombreProyecto, String descripcion,
+    public ProyectoResponse(Long id, Long idCliente, String nombreCliente, String nombreProyecto, String descripcion,
                             String direccionPropiedad, Proyecto.EstadoProyecto estado, LocalDate fechaInicio,
-                            LocalDate fechaFinEstimada, LocalDate fechaFinalizacionReal, Integer idEmpleadoResponsable,
+                            LocalDate fechaFinEstimada, LocalDate fechaFinalizacionReal, Long idEmpleadoResponsable,
                             String nombreEmpleadoResponsable, BigDecimal montoContrato, BigDecimal montoRecibido,
                             LocalDate fechaUltimoPagoRecibido, BigDecimal costoMaterialesConsolidado,
                             BigDecimal otrosGastosDirectosConsolidado, Integer progresoPorcentaje, String notasProyecto,
@@ -59,19 +59,19 @@ public class ProyectoResponse {
     }
 
     // Getters y Setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getIdCliente() {
+    public Long getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(Integer idCliente) {
+    public void setIdCliente(Long idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -139,11 +139,11 @@ public class ProyectoResponse {
         this.fechaFinalizacionReal = fechaFinalizacionReal;
     }
 
-    public Integer getIdEmpleadoResponsable() {
+    public Long getIdEmpleadoResponsable() {
         return idEmpleadoResponsable;
     }
 
-    public void setIdEmpleadoResponsable(Integer idEmpleadoResponsable) {
+    public void setIdEmpleadoResponsable(Long idEmpleadoResponsable) {
         this.idEmpleadoResponsable = idEmpleadoResponsable;
     }
 
