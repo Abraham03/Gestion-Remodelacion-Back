@@ -23,7 +23,7 @@ public class ClienteExportDTO implements Exportable {
     @Override
     public List<List<String>> getExportData() {
         String fechaFormateada = this.cliente.getFechaRegistro() != null
-                ? this.cliente.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                ? this.cliente.getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                 : "";
 
         return Arrays.asList(Arrays.asList(

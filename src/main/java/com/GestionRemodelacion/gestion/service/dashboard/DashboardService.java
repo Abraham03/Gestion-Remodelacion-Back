@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.GestionRemodelacion.gestion.cliente.repository.ClienteRepository;
+import com.GestionRemodelacion.gestion.dto.response.DashboardClientesResponse;
 import com.GestionRemodelacion.gestion.dto.response.DashboardSummaryResponse;
 import com.GestionRemodelacion.gestion.empleado.repository.EmpleadoRepository;
 import com.GestionRemodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
@@ -29,47 +30,69 @@ public class DashboardService {
     this.clienteRepository = clienteRepository;
   }
 
-    @Transactional(readOnly = true)
-    public DashboardSummaryResponse getDashboardSummary(Integer year) {
+ @Transactional(readOnly = true)
+    public DashboardSummaryResponse getDashboardSummary(Integer year, Integer month) {
         int targetYear = (year != null) ? year : LocalDate.now().getYear();
-        // Métricas de resumen (las que ya tenías)
-        Long totalProyectos = proyectoRepository.count();
-        Long empleadosActivos = empleadoRepository.countByActivo(true);
-        BigDecimal montoRecibido = Optional.ofNullable(proyectoRepository.sumMontoRecibido()).orElse(BigDecimal.ZERO);
-        BigDecimal costoMateriales = Optional.ofNullable(proyectoRepository.sumCostoMaterialesConsolidado()).orElse(BigDecimal.ZERO);
-        BigDecimal otrosGastos = Optional.ofNullable(proyectoRepository.sumOtrosGastosDirectosConsolidado()).orElse(BigDecimal.ZERO);
-        BigDecimal balanceFinanciero = montoRecibido.subtract(costoMateriales).subtract(otrosGastos);
-        Double costoPromedioPorHora = Optional.ofNullable(empleadoRepository.findAvgCostoPorHora()).orElse(0.0);
+        
+        // Declaramos variables
+        Long totalProyectos;
+        BigDecimal montoRecibido;
+        BigDecimal costoMateriales;
+        BigDecimal otrosGastos;
+        List<Object[]> proyectosPorEstado;
+        List<Object[]> horasPorProyecto;
+        List<Object[]> horasPorEmpleado;
+        List<Object[]> horasPorEmpleadoProyecto;
 
-        //NUEVAS CONSULTAS AÑADIDAS
-        List<Object[]> clientesPorMes = clienteRepository.countClientesByMonthForYear(targetYear);
+        // Lógica condicional para filtrar por mes si está presente
+        if (month != null && month > 0) {
+            totalProyectos = proyectoRepository.countByYearAndMonth(targetYear, month);
+            montoRecibido = Optional.ofNullable(proyectoRepository.sumMontoRecibidoByYearAndMonth(targetYear, month)).orElse(BigDecimal.ZERO);
+            costoMateriales = Optional.ofNullable(proyectoRepository.sumCostoMaterialesConsolidadoByYearAndMonth(targetYear, month)).orElse(BigDecimal.ZERO);
+            otrosGastos = Optional.ofNullable(proyectoRepository.sumOtrosGastosDirectosConsolidadoByYearAndMonth(targetYear, month)).orElse(BigDecimal.ZERO);
+            proyectosPorEstado = proyectoRepository.countProyectosByEstadoByYearAndMonth(targetYear, month);
+            horasPorProyecto = horasTrabajadasRepository.sumHorasByProyectoByYearAndMonth(targetYear, month);
+            horasPorEmpleado = horasTrabajadasRepository.sumHorasByEmpleadoByYearAndMonth(targetYear, month);
+            horasPorEmpleadoProyecto = horasTrabajadasRepository.sumHorasByEmpleadoAndProyectoByYearAndMonth(targetYear, month);
+        } else {
+            // Si no hay mes, filtramos solo por año
+            totalProyectos = proyectoRepository.countByYear(targetYear);
+            montoRecibido = Optional.ofNullable(proyectoRepository.sumMontoRecibidoByYear(targetYear)).orElse(BigDecimal.ZERO);
+            costoMateriales = Optional.ofNullable(proyectoRepository.sumCostoMaterialesConsolidadoByYear(targetYear)).orElse(BigDecimal.ZERO);
+            otrosGastos = Optional.ofNullable(proyectoRepository.sumOtrosGastosDirectosConsolidadoByYear(targetYear)).orElse(BigDecimal.ZERO);
+            proyectosPorEstado = proyectoRepository.countProyectosByEstadoByYear(targetYear);
+            horasPorProyecto = horasTrabajadasRepository.sumHorasByProyectoByYear(targetYear);
+            horasPorEmpleado = horasTrabajadasRepository.sumHorasByEmpleadoByYear(targetYear);
+            horasPorEmpleadoProyecto = horasTrabajadasRepository.sumHorasByEmpleadoAndProyectoByYear(targetYear);
+        }
+
+        // --- Métricas que no se filtran o tienen su propio filtro ---
+        BigDecimal balanceFinanciero = montoRecibido.subtract(costoMateriales).subtract(otrosGastos);
+        Long empleadosActivos = empleadoRepository.countByActivo(true);
+        Double costoPromedioPorHora = Optional.ofNullable(empleadoRepository.findAvgCostoPorHora()).orElse(0.0);
         List<Object[]> empleadosPorRol = empleadoRepository.countEmpleadosByRol();
-        List<Object[]> horasPorProyecto = horasTrabajadasRepository.sumHorasByProyecto();
-        List<Object[]> horasPorEmpleado = horasTrabajadasRepository.sumHorasByEmpleado();
-        List<Object[]> proyectosPorEstado = proyectoRepository.countProyectosByEstado();
-        List<Object[]> horasPorEmpleadoProyecto = horasTrabajadasRepository.sumHorasByEmpleadoAndProyecto();
 
         return new DashboardSummaryResponse(
-            totalProyectos,
-            empleadosActivos,
-            balanceFinanciero,
-            montoRecibido,
-            costoMateriales,
-            otrosGastos,
-            clientesPorMes,
-            empleadosPorRol,
-            horasPorProyecto,
-            horasPorEmpleado,
-            proyectosPorEstado,
-            horasPorEmpleadoProyecto,
-            costoPromedioPorHora
+            totalProyectos, empleadosActivos, balanceFinanciero, montoRecibido, costoMateriales, otrosGastos,
+            empleadosPorRol, horasPorProyecto, horasPorEmpleado, proyectosPorEstado,
+            horasPorEmpleadoProyecto, costoPromedioPorHora
         );
     }
+
+    @Transactional(readOnly = true)
+    public DashboardClientesResponse getDashboardClientesSummary(Integer year, Integer month) {
+        int targetYear = (year != null) ? year : LocalDate.now().getYear();
+
+        // Para este gráfico, siempre queremos los 12 meses del año seleccionado
+        List<Object[]> clientesPorMes = clienteRepository.countClientesByMonthForYear(targetYear);
+        
+        return new DashboardClientesResponse(clientesPorMes);
+    }    
 
 
     // ✅ CAMBIO: Nuevo método para obtener solo la lista de años.
     @Transactional(readOnly = true)
     public List<Integer> getAvailableYears() {
-        return clienteRepository.findDistinctYears();
+        return proyectoRepository.findDistinctYears();
     }
 }

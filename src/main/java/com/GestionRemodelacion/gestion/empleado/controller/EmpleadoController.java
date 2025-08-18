@@ -97,10 +97,10 @@ public class EmpleadoController {
 
         List<EmpleadoExportDTO> empleados = empleadoService.findEmpleadosForExport(filter, sort);
 
-        ByteArrayOutputStream excelStream = exporterService.exportToExcel(empleados, "Empleados");
+        ByteArrayOutputStream excelStream = exporterService.exportToExcel(empleados, "Reporte deEmpleados");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=empleados.xlsx");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Empleados.xlsx");
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
         return ResponseEntity.ok().headers(headers).body(excelStream.toByteArray());
@@ -122,7 +122,7 @@ public class EmpleadoController {
         ByteArrayOutputStream pdfStream = exporterService.exportToPdf(empleados, "Reporte de Empleados");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=empleados.pdf");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Empleados.pdf");
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());

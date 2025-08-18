@@ -5,7 +5,7 @@ import java.util.List;
 
 public class DashboardSummaryResponse {
 
-    // Métricas de resumen (las que ya tenías)
+    // --- Métricas de Resumen ---
     private final Long totalProyectos;
     private final Long empleadosActivos;
     private final BigDecimal balanceFinanciero;
@@ -13,27 +13,26 @@ public class DashboardSummaryResponse {
     private final BigDecimal costoMateriales;
     private final BigDecimal otrosGastos;
     private final Double costoPromedioPorHora;
-    // Nuevas métricas
-    private final List<Object[]> clientesPorMes;
+    
+    // --- Datos para Gráficos y Tablas ---
     private final List<Object[]> empleadosPorRol;
     private final List<Object[]> horasPorProyecto;
     private final List<Object[]> horasPorEmpleado;
     private final List<Object[]> proyectosPorEstado;
     private final List<Object[]> horasPorEmpleadoProyecto;
-
-    // Constructor completo
-    public DashboardSummaryResponse(Long totalProyectos, Long empleadosActivos, BigDecimal balanceFinanciero,BigDecimal montoRecibido, BigDecimal costoMateriales, BigDecimal otrosGastos,
-                                 List<Object[]> clientesPorMes, List<Object[]> empleadosPorRol,
-                                 List<Object[]> horasPorProyecto, List<Object[]> horasPorEmpleado,
-                                 List<Object[]> proyectosPorEstado,
-                                 List<Object[]> horasPorEmpleadoProyecto, Double costoPromedioPorHora) {
+    
+    public DashboardSummaryResponse(Long totalProyectos, Long empleadosActivos, BigDecimal balanceFinanciero,
+                                  BigDecimal montoRecibido, BigDecimal costoMateriales, BigDecimal otrosGastos,
+                                  List<Object[]> empleadosPorRol,
+                                  List<Object[]> horasPorProyecto, List<Object[]> horasPorEmpleado,
+                                  List<Object[]> proyectosPorEstado, List<Object[]> horasPorEmpleadoProyecto,
+                                  Double costoPromedioPorHora) {
         this.totalProyectos = totalProyectos;
         this.empleadosActivos = empleadosActivos;
         this.balanceFinanciero = balanceFinanciero;
         this.montoRecibido = montoRecibido;
         this.costoMateriales = costoMateriales;
         this.otrosGastos = otrosGastos;
-        this.clientesPorMes = clientesPorMes;
         this.empleadosPorRol = empleadosPorRol;
         this.horasPorProyecto = horasPorProyecto;
         this.horasPorEmpleado = horasPorEmpleado;
@@ -42,7 +41,7 @@ public class DashboardSummaryResponse {
         this.costoPromedioPorHora = costoPromedioPorHora;
     }
 
-    // Getters
+    
     public Long getTotalProyectos() {
         return totalProyectos;
     }
@@ -65,10 +64,6 @@ public class DashboardSummaryResponse {
 
     public BigDecimal getOtrosGastos() {
         return otrosGastos;
-    }
-
-    public List<Object[]> getClientesPorMes() {
-        return clientesPorMes;
     }
 
     public List<Object[]> getEmpleadosPorRol() {
