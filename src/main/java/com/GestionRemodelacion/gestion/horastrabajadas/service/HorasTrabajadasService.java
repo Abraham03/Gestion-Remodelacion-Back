@@ -1,8 +1,12 @@
 package com.GestionRemodelacion.gestion.horastrabajadas.service;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
 import com.GestionRemodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
+import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasExportDTO;
 import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
 import com.GestionRemodelacion.gestion.horastrabajadas.model.HorasTrabajadas;
 import com.GestionRemodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
@@ -28,9 +33,12 @@ public class HorasTrabajadasService {
     }
 
     @Transactional(readOnly = true)
-    public Page<HorasTrabajadasResponse> getAllHorasTrabajadas(Pageable pageable) {
-        return horasTrabajadasRepository.findAll(pageable)
-                .map(horasTrabajadasMapper::toHorasTrabajadasResponse);
+    public Page<HorasTrabajadasResponse> getAllHorasTrabajadas(Pageable pageable, String filter) {
+         if (filter != null && !filter.trim().isEmpty()) {
+            return horasTrabajadasRepository.findByFilterWithDetails(filter, pageable);
+        } else {
+            return  horasTrabajadasRepository.findAllWithDetails(pageable);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -65,4 +73,29 @@ public class HorasTrabajadasService {
         horasTrabajadasRepository.deleteById(id);
         return new ApiResponse<>(HttpStatus.OK.value(), "Registro de horas trabajadas eliminado exitosamente.", null);
     }
+
+   @Transactional(readOnly = true)
+    public List<HorasTrabajadasExportDTO> findHorasTrabajadasForExport(String filter, String sort) {
+        Sort sortObj = Sort.by(Sort.Direction.DESC, "fecha"); // Ordenar por fecha por defecto
+        if (sort != null && !sort.isEmpty()) {
+            String[] sortParts = sort.split(",");
+            if (sortParts.length == 2) {
+                String property = sortParts[0];
+                Sort.Direction direction = "desc".equalsIgnoreCase(sortParts[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
+                sortObj = Sort.by(direction, property);
+            }
+        }
+
+        List<HorasTrabajadas> horas;
+        if (filter != null && !filter.trim().isEmpty()) {
+            horas = horasTrabajadasRepository.findByFilterForExport(filter, sortObj);
+        } else {
+            horas = horasTrabajadasRepository.findAll(sortObj);
+        }
+
+        return horas.stream()
+                .map(HorasTrabajadasExportDTO::new)
+                .collect(Collectors.toList());
+    }    
+
 }

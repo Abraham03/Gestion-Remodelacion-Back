@@ -1,36 +1,19 @@
-FROM openjdk:17-jdk-slim as build
-
+# --- STAGE 1: Build de la aplicación Java con Maven ---
+# Usamos una imagen que ya incluye Maven y el JDK, lo que simplifica el Dockerfile
+FROM maven:3.9-eclipse-temurin-17-focal AS build
 WORKDIR /app
-
-# --- NUEVAS LÍNEAS PARA INSTALAR MAVEN ---
-# Instalar wget o curl para descargar Maven
-RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
-# Descargar Maven
-ARG MAVEN_VERSION=3.9.11
-ARG BASE_URL=https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries
-RUN wget ${BASE_URL}/apache-maven-${MAVEN_VERSION}-bin.tar.gz -P /tmp/
-RUN tar xf /tmp/apache-maven-${MAVEN_VERSION}-bin.tar.gz -C /opt/
-RUN ln -s /opt/apache-maven-${MAVEN_VERSION} /opt/maven
-ENV MAVEN_HOME /opt/maven
-ENV PATH=${MAVEN_HOME}/bin:${PATH}
-# --- FIN DE LAS NUEVAS LÍNEAS ---
-
-
-# Copia los archivos de Maven para descargar dependencias y construir
 COPY pom.xml .
 COPY src ./src
-
-# Build de la aplicación Java con Maven
 RUN mvn clean package -DskipTests
 
-# --- STAGE 2: Crear la imagen final ligera ---
-FROM openjdk:17-jdk-slim
-
+# --- STAGE 2: Creación de la imagen final ligera ---
+# Usamos una imagen JRE (solo para ejecutar, no compilar) para reducir el tamaño
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-
-# Copia el JAR compilado desde la etapa de build
+# Copiamos el JAR compilado desde la etapa 'build'
 COPY --from=build /app/target/gestion-backend.jar app.jar
 
+# Exponemos el puerto 8080 que usa la aplicación
 EXPOSE 8080
-
+# El ENTRYPOINT para ejecutar la aplicación
 ENTRYPOINT ["java", "-jar", "app.jar"]

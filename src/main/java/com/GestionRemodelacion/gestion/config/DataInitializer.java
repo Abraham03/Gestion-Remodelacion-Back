@@ -41,7 +41,7 @@ public class DataInitializer {
     public void init() {
         // 1. Definir y guardar permisos
         Set<String> allPermissionsNames = new HashSet<>(Arrays.asList(
-                "USER_READ", "USER_CREATE", "USER_UPDATE", "USER_DELETE", // Agregado "USER_UPDATE_ROLES" si tienes ese permiso granular
+                "USER_READ", "USER_CREATE", "USER_UPDATE", "USER_DELETE", 
                 "ROLE_READ", "ROLE_CREATE", "ROLE_UPDATE", "ROLE_DELETE",
                 "PERMISSION_READ", "PERMISSION_CREATE", "PERMISSION_UPDATE", "PERMISSION_DELETE",
                 "PROYECTO_READ", "PROYECTO_CREATE", "PROYECTO_UPDATE", "PROYECTO_DELETE",

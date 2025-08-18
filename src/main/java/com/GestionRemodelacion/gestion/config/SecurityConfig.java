@@ -2,6 +2,7 @@ package com.GestionRemodelacion.gestion.config;
 
 import java.util.List;
 
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -72,7 +73,7 @@ public class SecurityConfig {
                     "/swagger-ui/**",
                     "/swagger-ui.html"
                 ).permitAll() 
-                
+                .requestMatchers(EndpointRequest.to("health")).permitAll() 
                 // --- Rutas protegidas por permisos/roles usando hasAuthority() ---
                 // Uso de HttpMethod.GET, HttpMethod.POST, etc. para evitar warnings futuros.
 

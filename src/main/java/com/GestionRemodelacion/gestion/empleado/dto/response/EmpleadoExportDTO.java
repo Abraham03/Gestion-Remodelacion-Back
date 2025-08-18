@@ -22,10 +22,10 @@ public class EmpleadoExportDTO implements Exportable{
     @Override
     public List<List<String>> getExportData() {
         String fechaFormateada = this.empleado.getFechaContratacion() != null
-                ? this.empleado.getFechaContratacion().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                ? this.empleado.getFechaContratacion().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                 : "";
         String fechaRegistroFormateada = this.empleado.getFechaRegistro() != null
-                ? this.empleado.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                ? this.empleado.getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
                 : "";    
                     
         return Arrays.asList(Arrays.asList(

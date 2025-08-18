@@ -30,12 +30,10 @@ public class EmpleadoService {
         this.empleadoMapper = empleadoMapper;
     }
 
-    // *** MODIFICACIÓN PARA PAGINACIÓN ***
     @Transactional(readOnly = true)
     public Page<EmpleadoResponse> getAllEmpleados(Pageable pageable, String filter) {
         Page<Empleado> empleadosPage;
         if (filter != null && !filter.trim().isEmpty()) {
-            // ⭐️ MODIFICADO: Usa el nuevo método del repositorio para filtrar
             empleadosPage = empleadoRepository.findByNombreCompletoContainingIgnoreCaseOrRolCargoContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(filter, filter, filter, pageable);
         } else {
             empleadosPage = empleadoRepository.findAll(pageable);

@@ -26,7 +26,7 @@ import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteExportDTO;
 import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
 import com.GestionRemodelacion.gestion.cliente.service.ClienteService;
 import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.export.ExporterService;
+import com.GestionRemodelacion.gestion.proyecto.service.ProyectoService;
 import com.itextpdf.text.DocumentException;
 
 import jakarta.validation.Valid;
@@ -36,11 +36,11 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     private final ClienteService clienteService;
-    private final ExporterService exporterService;
+    private final ProyectoService proyectoService;
 
-    public ClienteController(ClienteService clienteService, ExporterService exporterService) {
+    public ClienteController(ClienteService clienteService, ProyectoService proyectoService) {
         this.clienteService = clienteService;
-        this.exporterService = exporterService;
+        this.proyectoService = proyectoService;
     }
 
     @GetMapping
@@ -86,12 +86,11 @@ public class ClienteController {
         @RequestParam(name = "filter", required = false) String filter,
         @RequestParam(name = "sort", required = false) String sort) throws IOException {
 
-        List<ClienteExportDTO> clientes = clienteService.findClientesForExport(filter, sort);
 
-        ByteArrayOutputStream excelStream = exporterService.exportToExcel(clientes, "Clientes");
+        ByteArrayOutputStream excelStream = proyectoService.exportToExcel(filter, sort);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=clientes.xlsx");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Clientes.xlsx");
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
 
         return ResponseEntity.ok().headers(headers).body(excelStream.toByteArray());
@@ -109,10 +108,10 @@ public class ClienteController {
         // Devuelve una respuesta HTTP 404 Not Found o 204 No Content
         return ResponseEntity.notFound().build(); 
     }
-        ByteArrayOutputStream pdfStream = exporterService.exportToPdf(clientes, "Reporte de Clientes");
+        ByteArrayOutputStream pdfStream = proyectoService.exportToPdf(filter, sort);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=clientes.pdf");
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Clientes.pdf");
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());
