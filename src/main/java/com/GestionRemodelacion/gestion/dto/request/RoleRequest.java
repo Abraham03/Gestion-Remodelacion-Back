@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class RoleRequest {
+
     private Long id;
 
     @NotBlank(message = "Role name cannot be empty")
@@ -18,7 +19,8 @@ public class RoleRequest {
     private Set<Long> permissions; // Names of associated permissions
 
     // Constructors
-    public RoleRequest() {}
+    public RoleRequest() {
+    }
 
     // Getters and Setters
     public Long getId() {

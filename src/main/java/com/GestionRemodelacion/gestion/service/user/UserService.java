@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.user;
+package com.gestionremodelacion.gestion.service.user;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -15,14 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.request.UserRequest;
-import com.GestionRemodelacion.gestion.dto.response.UserResponse;
-import com.GestionRemodelacion.gestion.mapper.UserMapper;
-import com.GestionRemodelacion.gestion.model.Role;
-import com.GestionRemodelacion.gestion.model.User;
-import com.GestionRemodelacion.gestion.repository.RefreshTokenRepository;
-import com.GestionRemodelacion.gestion.repository.RoleRepository;
-import com.GestionRemodelacion.gestion.repository.UserRepository;
+import com.gestionremodelacion.gestion.dto.request.UserRequest;
+import com.gestionremodelacion.gestion.dto.response.UserResponse;
+import com.gestionremodelacion.gestion.mapper.UserMapper;
+import com.gestionremodelacion.gestion.model.Role;
+import com.gestionremodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.repository.RefreshTokenRepository;
+import com.gestionremodelacion.gestion.repository.RoleRepository;
+import com.gestionremodelacion.gestion.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -31,6 +31,7 @@ import jakarta.persistence.EntityNotFoundException;
  */
 @Service
 public class UserService {
+
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -59,26 +60,25 @@ public class UserService {
         log.debug("Found {} users on page {}.", usersPage.getTotalElements(), pageable.getPageNumber()); // New log
 
         return usersPage.map(userMapper::toDto);
-    }   
-
+    }
 
     @Transactional(readOnly = true)
     public UserResponse findById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
         return userMapper.toDto(user);
-    }  
+    }
 
     @Transactional
-     public UserResponse createUser(UserRequest userRequest) {
+    public UserResponse createUser(UserRequest userRequest) {
         User user = userMapper.toEntity(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword())); // Encode password
         user.setEnabled(userRequest.isEnabled()); // Set enabled status
 
         Set<Role> roles = userRequest.getRoles().stream()
-            .map(roleId -> roleRepository.findById(roleId)
+                .map(roleId -> roleRepository.findById(roleId)
                 .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId)))
-            .collect(Collectors.toSet());
+                .collect(Collectors.toSet());
         user.setRoles(roles);
 
         User savedUser = userRepository.save(user);
@@ -86,7 +86,7 @@ public class UserService {
     }
 
     @Transactional
-   public UserResponse updateUser(Long id, UserRequest userRequest) {
+    public UserResponse updateUser(Long id, UserRequest userRequest) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
@@ -102,9 +102,9 @@ public class UserService {
         Set<Role> updatedRoles = new HashSet<>();
         if (userRequest.getRoles() != null && !userRequest.getRoles().isEmpty()) {
             updatedRoles = userRequest.getRoles().stream()
-                .map(roleId -> roleRepository.findById(roleId)
+                    .map(roleId -> roleRepository.findById(roleId)
                     .orElseThrow(() -> new EntityNotFoundException("Role not found with id: " + roleId)))
-                .collect(Collectors.toSet());
+                    .collect(Collectors.toSet());
         }
         existingUser.setRoles(updatedRoles);
 
@@ -113,18 +113,18 @@ public class UserService {
     }
 
     @Transactional
-public void deleteById(Long id) {
-    // 1. Verificar si el usuario existe para lanzar una excepción si no es así.
-    User user = userRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + id));
+    public void deleteById(Long id) {
+        // 1. Verificar si el usuario existe para lanzar una excepción si no es así.
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + id));
 
-    // 2. Eliminar todos los tokens de actualización asociados a este usuario.
-    // Esto previene el error de clave foránea.
-    refreshTokenRepository.deleteByUser(user); // Asumo que tienes este método en tu RefreshTokenRepository
+        // 2. Eliminar todos los tokens de actualización asociados a este usuario.
+        // Esto previene el error de clave foránea.
+        refreshTokenRepository.deleteByUser(user); // Asumo que tienes este método en tu RefreshTokenRepository
 
-    // 3. Ahora que las dependencias han sido eliminadas, puedes eliminar al usuario.
-    userRepository.delete(user);
-}
+        // 3. Ahora que las dependencias han sido eliminadas, puedes eliminar al usuario.
+        userRepository.delete(user);
+    }
 
     @Transactional
     public UserResponse updateUserRoles(Long id, Set<String> roleNames) {
@@ -133,7 +133,7 @@ public void deleteById(Long id) {
 
         Set<Role> newRoles = roleNames.stream()
                 .map(roleName -> roleRepository.findByName(roleName) // Assuming findByName exists in RoleRepository
-                        .orElseThrow(() -> new EntityNotFoundException("Role not found with name: " + roleName)))
+                .orElseThrow(() -> new EntityNotFoundException("Role not found with name: " + roleName)))
                 .collect(Collectors.toSet());
 
         existingUser.setRoles(newRoles);
@@ -150,6 +150,6 @@ public void deleteById(Long id) {
     @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
-    }     
+    }
 
 }

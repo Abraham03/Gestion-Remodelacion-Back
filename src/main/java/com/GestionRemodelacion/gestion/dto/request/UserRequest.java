@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
 
 import java.util.Set;
 
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class UserRequest {
+
     private Long id;
 
     @NotBlank(message = "Username cannot be empty")
@@ -22,9 +23,11 @@ public class UserRequest {
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     // Getters and Setters
     public String getUsername() {
         return username;
@@ -49,12 +52,13 @@ public class UserRequest {
     public void setRoles(Set<Long> roles) {
         this.roles = roles;
     }
+
     public boolean isEnabled() {
         return enabled;
     }
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    
 }

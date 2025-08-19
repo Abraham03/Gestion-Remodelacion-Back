@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.auth;
+package com.gestionremodelacion.gestion.service.auth;
 
 import java.util.Date;
 import java.util.List;
@@ -12,15 +12,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestionRemodelacion.gestion.dto.request.LoginRequest;
-import com.GestionRemodelacion.gestion.dto.request.RefreshTokenRequest;
-import com.GestionRemodelacion.gestion.dto.response.AuthResponse;
-import com.GestionRemodelacion.gestion.model.Permission;
-import com.GestionRemodelacion.gestion.model.RefreshToken;
-import com.GestionRemodelacion.gestion.model.Role;
-import com.GestionRemodelacion.gestion.model.User;
-import com.GestionRemodelacion.gestion.security.jwt.JwtUtils;
-import com.GestionRemodelacion.gestion.service.impl.UserDetailsImpl;
+import com.gestionremodelacion.gestion.dto.request.LoginRequest;
+import com.gestionremodelacion.gestion.dto.request.RefreshTokenRequest;
+import com.gestionremodelacion.gestion.dto.response.AuthResponse;
+import com.gestionremodelacion.gestion.model.Permission;
+import com.gestionremodelacion.gestion.model.RefreshToken;
+import com.gestionremodelacion.gestion.model.Role;
+import com.gestionremodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.security.jwt.JwtUtils;
+import com.gestionremodelacion.gestion.service.impl.UserDetailsImpl;
 
 /**
  * Servicio de autenticación con: - Manejo de transacciones - Rotación de tokens
@@ -53,29 +53,29 @@ public class AuthService {
                             request.getPassword()));
 
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-           
+
             // ⭐️ OBTENER ROLES Y AUTORIDADES POR SEPARADO
             List<String> authorities = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-            
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
             List<String> roles = userDetails.getUserRoles().stream() // 👈 SE AGREGA: Necesitas un método en UserDetailsImpl para obtener solo los roles
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-           
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList());
+
             // Generar tokens
             String jwtToken = jwtUtils.generateJwtToken(authentication);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
- 
+
             return new AuthResponse(
-                jwtToken,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                authorities, // 👈 SE PASAN las autoridades (permisos + roles)
-                roles,       // 👈 SE PASAN solo los roles
-                jwtUtils.getExpirationDateFromToken(jwtToken),
-                refreshToken.getToken()
-            );            
+                    jwtToken,
+                    userDetails.getId(),
+                    userDetails.getUsername(),
+                    authorities, // 👈 SE PASAN las autoridades (permisos + roles)
+                    roles, // 👈 SE PASAN solo los roles
+                    jwtUtils.getExpirationDateFromToken(jwtToken),
+                    refreshToken.getToken()
+            );
 
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Credenciales inválidas");
@@ -100,26 +100,26 @@ public class AuthService {
         // ⭐️ OBTENER ROLES Y PERMISOS SEPARADOS
         // Esto es necesario para devolver la lista de autoridades completa
         List<String> allAuthorities = user.getRoles().stream()
-            .flatMap(role -> {
-                Set<String> authorities = new java.util.HashSet<>();
-                authorities.add(role.getName()); // Agregar el nombre del rol
-                authorities.addAll(role.getPermissions().stream()
-                    .map(Permission::getName)
-                    .collect(Collectors.toSet())); // Agregar los permisos
-                return authorities.stream();
-            })
-            .collect(Collectors.toList());
+                .flatMap(role -> {
+                    Set<String> authorities = new java.util.HashSet<>();
+                    authorities.add(role.getName()); // Agregar el nombre del rol
+                    authorities.addAll(role.getPermissions().stream()
+                            .map(Permission::getName)
+                            .collect(Collectors.toSet())); // Agregar los permisos
+                    return authorities.stream();
+                })
+                .collect(Collectors.toList());
 
-      List<String> roles = user.getRoles().stream()
-            .map(Role::getName)
-            .collect(Collectors.toList());            
+        List<String> roles = user.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
 
         return new AuthResponse(
                 newJwtToken,
                 user.getId(),
                 user.getUsername(),
                 allAuthorities, // 👈 SE PASAN las autoridades (permisos + roles)
-                roles,          // 👈 SE PASAN solo los roles
+                roles, // 👈 SE PASAN solo los roles
                 jwtUtils.getExpirationDateFromToken(newJwtToken),
                 refreshToken.getToken()
         );

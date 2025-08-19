@@ -1,22 +1,24 @@
-package com.GestionRemodelacion.gestion.empleado.dto.response;
+package com.gestionremodelacion.gestion.empleado.dto.response;
+
 import java.math.BigDecimal;
-import java.time.LocalDate; 
-import java.time.LocalDateTime; 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class EmpleadoResponse {
+
     private Long id;
     private String nombreCompleto;
     private String rolCargo;
     private String telefonoContacto;
-    private LocalDate fechaContratacion; 
+    private LocalDate fechaContratacion;
     private BigDecimal costoPorHora;
     private Boolean activo;
     private String notas;
-    private LocalDateTime fechaRegistro; 
+    private LocalDateTime fechaRegistro;
 
     public EmpleadoResponse(Long id, String nombreCompleto, String rolCargo, String telefonoContacto,
-                            LocalDate fechaContratacion, BigDecimal costoPorHora,
-                            Boolean activo, String notas, LocalDateTime fechaRegistro) { 
+            LocalDate fechaContratacion, BigDecimal costoPorHora,
+            Boolean activo, String notas, LocalDateTime fechaRegistro) {
         this.id = id;
         this.nombreCompleto = nombreCompleto;
         this.rolCargo = rolCargo;
@@ -28,7 +30,6 @@ public class EmpleadoResponse {
         this.fechaRegistro = fechaRegistro;
     }
 
-   
     public LocalDate getFechaContratacion() {
         return fechaContratacion;
     }
@@ -100,5 +101,5 @@ public class EmpleadoResponse {
     public void setNotas(String notas) {
         this.notas = notas;
     }
-   
+
 }

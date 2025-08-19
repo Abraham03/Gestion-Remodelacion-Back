@@ -1,10 +1,10 @@
-package com.GestionRemodelacion.gestion.proyecto.dto.response;
+package com.gestionremodelacion.gestion.proyecto.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
 
 public class ProyectoResponse {
 
@@ -30,12 +30,12 @@ public class ProyectoResponse {
     private LocalDateTime fechaCreacion;
 
     public ProyectoResponse(Long id, Long idCliente, String nombreCliente, String nombreProyecto, String descripcion,
-                            String direccionPropiedad, Proyecto.EstadoProyecto estado, LocalDate fechaInicio,
-                            LocalDate fechaFinEstimada, LocalDate fechaFinalizacionReal, Long idEmpleadoResponsable,
-                            String nombreEmpleadoResponsable, BigDecimal montoContrato, BigDecimal montoRecibido,
-                            LocalDate fechaUltimoPagoRecibido, BigDecimal costoMaterialesConsolidado,
-                            BigDecimal otrosGastosDirectosConsolidado, Integer progresoPorcentaje, String notasProyecto,
-                            LocalDateTime fechaCreacion) {
+            String direccionPropiedad, Proyecto.EstadoProyecto estado, LocalDate fechaInicio,
+            LocalDate fechaFinEstimada, LocalDate fechaFinalizacionReal, Long idEmpleadoResponsable,
+            String nombreEmpleadoResponsable, BigDecimal montoContrato, BigDecimal montoRecibido,
+            LocalDate fechaUltimoPagoRecibido, BigDecimal costoMaterialesConsolidado,
+            BigDecimal otrosGastosDirectosConsolidado, Integer progresoPorcentaje, String notasProyecto,
+            LocalDateTime fechaCreacion) {
         this.id = id;
         this.idCliente = idCliente;
         this.nombreCliente = nombreCliente;

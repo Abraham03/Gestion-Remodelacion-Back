@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,9 +14,8 @@ public class AuthResponse {
     private final List<String> roles;
     private final Date expirationDate;
     private final String refreshToken;
-    
 
-    public AuthResponse(String token, Long id, String username, List<String> authorities,List<String> roles, Date expirationDate, String refreshToken) {
+    public AuthResponse(String token, Long id, String username, List<String> authorities, List<String> roles, Date expirationDate, String refreshToken) {
         this.token = token;
         this.id = id;
         this.username = username;
@@ -26,20 +25,34 @@ public class AuthResponse {
         this.refreshToken = refreshToken;
     }
 
-
-
     // Getters
-    public String getToken() { return token; }
-    public String getType() { return type; }
-    public Long getId() { return id; }
-    public String getUsername() { return username; }
-    public List<String> getAuthorities() { return authorities; }
+    public String getToken() {
+        return token;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public List<String> getAuthorities() {
+        return authorities;
+    }
+
     public String getExpirationDate() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expirationDate);
     }
-    public String getRefreshToken() { return refreshToken; }
 
-
+    public String getRefreshToken() {
+        return refreshToken;
+    }
 
     public List<String> getRoles() {
         return roles;

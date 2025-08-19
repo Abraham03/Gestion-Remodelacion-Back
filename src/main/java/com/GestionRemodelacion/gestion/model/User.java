@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.model;
+package com.gestionremodelacion.gestion.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,14 +16,14 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 /**
- * Entidad que representa un usuario en el sistema.
- * Contiene información de autenticación y autorización.
+ * Entidad que representa un usuario en el sistema. Contiene información de
+ * autenticación y autorización.
  */
 @Entity
 @Table(name = "users",
-       uniqueConstraints = {
-           @UniqueConstraint(columnNames = "username")
-       })
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = "username")
+        })
 public class User {
 
     @Id
@@ -38,12 +38,12 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-    
+
     @Column(nullable = false)
     private boolean enabled = true;
 
@@ -96,7 +96,5 @@ public class User {
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
-
-
 
 }

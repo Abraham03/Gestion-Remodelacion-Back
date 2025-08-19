@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.cliente.model;
+package com.gestionremodelacion.gestion.cliente.model;
 
 import java.time.LocalDateTime;
 
@@ -84,7 +84,7 @@ public class Cliente {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(LocalDateTime  fechaRegistro) {
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 }

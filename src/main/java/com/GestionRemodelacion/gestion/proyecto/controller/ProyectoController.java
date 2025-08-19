@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.proyecto.controller;
+package com.gestionremodelacion.gestion.proyecto.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,13 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.export.ExporterService;
-import com.GestionRemodelacion.gestion.proyecto.dto.request.ProyectoRequest;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoExcelDTO;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoPdfDTO;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoResponse;
-import com.GestionRemodelacion.gestion.proyecto.service.ProyectoService;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.export.ExporterService;
+import com.gestionremodelacion.gestion.proyecto.dto.request.ProyectoRequest;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoExcelDTO;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoPdfDTO;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoResponse;
+import com.gestionremodelacion.gestion.proyecto.service.ProyectoService;
 import com.itextpdf.text.DocumentException;
 
 import jakarta.validation.Valid;
@@ -45,16 +45,16 @@ public class ProyectoController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('PROYECTO_READ')") 
-    public ResponseEntity<ApiResponse<Page<ProyectoResponse>>> getAllProyectos( 
-        Pageable pageable,
-        @RequestParam(name = "filter", required = false) String filter) {
-        Page<ProyectoResponse> proyectosPage = proyectoService.getAllProyectos(pageable, filter); 
+    @PreAuthorize("hasAuthority('PROYECTO_READ')")
+    public ResponseEntity<ApiResponse<Page<ProyectoResponse>>> getAllProyectos(
+            Pageable pageable,
+            @RequestParam(name = "filter", required = false) String filter) {
+        Page<ProyectoResponse> proyectosPage = proyectoService.getAllProyectos(pageable, filter);
         return ResponseEntity.ok(ApiResponse.success(proyectosPage));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('PROYECTO_READ')") 
+    @PreAuthorize("hasAuthority('PROYECTO_READ')")
     public ResponseEntity<ProyectoResponse> getProyectoById(@PathVariable Long id) {
         ProyectoResponse proyecto = proyectoService.getProyectoById(id);
         return ResponseEntity.ok(proyecto);
@@ -68,14 +68,14 @@ public class ProyectoController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('PROYECTO_UPDATE')") 
+    @PreAuthorize("hasAuthority('PROYECTO_UPDATE')")
     public ResponseEntity<ProyectoResponse> updateProyecto(@PathVariable Long id, @Valid @RequestBody ProyectoRequest proyectoRequest) {
         ProyectoResponse updatedProyecto = proyectoService.updateProyecto(id, proyectoRequest);
         return ResponseEntity.ok(updatedProyecto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('PROYECTO_DELETE')") 
+    @PreAuthorize("hasAuthority('PROYECTO_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteProyecto(@PathVariable Long id) {
         proyectoService.deleteProyecto(id);
         return ResponseEntity.ok(ApiResponse.success(null));
@@ -121,5 +121,5 @@ public class ProyectoController {
 
         return ResponseEntity.ok().headers(headers
         ).body(pdfStream.toByteArray());
-    }    
+    }
 }

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.mapper;
+package com.gestionremodelacion.gestion.mapper;
 
 import java.util.List;
 
@@ -6,17 +6,16 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.GestionRemodelacion.gestion.empleado.dto.request.EmpleadoRequest;
-import com.GestionRemodelacion.gestion.empleado.dto.response.EmpleadoResponse;
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.empleado.dto.request.EmpleadoRequest;
+import com.gestionremodelacion.gestion.empleado.dto.response.EmpleadoResponse;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
 
 @Mapper(componentModel = "spring")
 public interface EmpleadoMapper {
 
-
     /**
-     * Maps an Empleado entity to an EmpleadoResponse DTO.
-     * Direct field mapping is performed.
+     * Maps an Empleado entity to an EmpleadoResponse DTO. Direct field mapping
+     * is performed.
      *
      * @param empleado The Empleado entity to map.
      * @return The mapped EmpleadoResponse DTO.
@@ -32,8 +31,9 @@ public interface EmpleadoMapper {
     List<EmpleadoResponse> toEmpleadoResponseList(List<Empleado> empleados);
 
     /**
-     * Maps an EmpleadoRequest DTO to a new Empleado entity.
-     * 'id' and 'fechaRegistro' are ignored as they are handled by the database/entity lifecycle.
+     * Maps an EmpleadoRequest DTO to a new Empleado entity. 'id' and
+     * 'fechaRegistro' are ignored as they are handled by the database/entity
+     * lifecycle.
      *
      * @param request The EmpleadoRequest DTO to map from.
      * @return A new Empleado entity.
@@ -44,15 +44,16 @@ public interface EmpleadoMapper {
     Empleado toEmpleado(EmpleadoRequest request);
 
     /**
-     * Updates an existing Empleado entity from an EmpleadoRequest DTO.
-     * 'id' and 'fechaRegistro' are ignored as they should not be updated from the request.
-     * 'activo' is also ignored as its update is handled by a specific PATCH endpoint (Empleado_UPDATE permission).
+     * Updates an existing Empleado entity from an EmpleadoRequest DTO. 'id' and
+     * 'fechaRegistro' are ignored as they should not be updated from the
+     * request. 'activo' is also ignored as its update is handled by a specific
+     * PATCH endpoint (Empleado_UPDATE permission).
      *
      * @param request The EmpleadoRequest DTO with updated data.
      * @param empleado The existing Empleado entity to update.
      */
     @Mapping(target = "id", ignore = true) // ID should not be updated from request
     @Mapping(target = "fechaRegistro", ignore = true) // FechaRegistro should not be updated from request
-    void updateEmpleadoFromRequest(EmpleadoRequest request, @MappingTarget Empleado empleado);    
+    void updateEmpleadoFromRequest(EmpleadoRequest request, @MappingTarget Empleado empleado);
 
 }

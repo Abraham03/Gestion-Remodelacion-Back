@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.empleado.service;
+package com.gestionremodelacion.gestion.empleado.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.empleado.dto.request.EmpleadoRequest;
-import com.GestionRemodelacion.gestion.empleado.dto.response.EmpleadoExportDTO;
-import com.GestionRemodelacion.gestion.empleado.dto.response.EmpleadoResponse;
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
-import com.GestionRemodelacion.gestion.empleado.repository.EmpleadoRepository;
-import com.GestionRemodelacion.gestion.mapper.EmpleadoMapper;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.empleado.dto.request.EmpleadoRequest;
+import com.gestionremodelacion.gestion.empleado.dto.response.EmpleadoExportDTO;
+import com.gestionremodelacion.gestion.empleado.dto.response.EmpleadoResponse;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.empleado.repository.EmpleadoRepository;
+import com.gestionremodelacion.gestion.mapper.EmpleadoMapper;
 
 @Service
 public class EmpleadoService {
@@ -105,7 +105,7 @@ public class EmpleadoService {
         if (sort != null && !sort.isEmpty()) {
             try {
                 String[] sortParts = sort.split(",");
-                if(sortParts.length == 2) {
+                if (sortParts.length == 2) {
                     String sortProperty = sortParts[0];
                     Sort.Direction sortDirection = "desc".equalsIgnoreCase(sortParts[1]) ? Sort.Direction.DESC : Sort.Direction.ASC;
                     sortObj = Sort.by(sortDirection, sortProperty);
@@ -125,6 +125,6 @@ public class EmpleadoService {
         return empleados.stream()
                 .map(EmpleadoExportDTO::new)
                 .collect(Collectors.toList());
-    }    
+    }
 
 }

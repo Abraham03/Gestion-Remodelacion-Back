@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.controller.auth;
+package com.gestionremodelacion.gestion.controller.auth;
 
 import java.util.Set;
 
@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.request.LoginRequest;
-import com.GestionRemodelacion.gestion.dto.request.RefreshTokenRequest;
-import com.GestionRemodelacion.gestion.dto.request.UserRequest;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.dto.response.AuthResponse;
-import com.GestionRemodelacion.gestion.model.Role;
-import com.GestionRemodelacion.gestion.security.jwt.JwtUtils;
-import com.GestionRemodelacion.gestion.service.auth.AuthService;
-import com.GestionRemodelacion.gestion.service.auth.RefreshTokenService;
-import com.GestionRemodelacion.gestion.service.role.RoleService;
-import com.GestionRemodelacion.gestion.service.user.UserService;
+import com.gestionremodelacion.gestion.dto.request.LoginRequest;
+import com.gestionremodelacion.gestion.dto.request.RefreshTokenRequest;
+import com.gestionremodelacion.gestion.dto.request.UserRequest;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.dto.response.AuthResponse;
+import com.gestionremodelacion.gestion.model.Role;
+import com.gestionremodelacion.gestion.security.jwt.JwtUtils;
+import com.gestionremodelacion.gestion.service.auth.AuthService;
+import com.gestionremodelacion.gestion.service.auth.RefreshTokenService;
+import com.gestionremodelacion.gestion.service.role.RoleService;
+import com.gestionremodelacion.gestion.service.user.UserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,13 +33,15 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+
     private final UserService userService;
     private final AuthService authService;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
     private final RoleService roleService;
 
-    public AuthController(UserService userService, AuthService authService, JwtUtils jwtUtils,RefreshTokenService refreshTokenService, RoleService roleService) {
+    public AuthController(UserService userService, AuthService authService, JwtUtils jwtUtils , RefreshTokenService refreshTokenService, RoleService roleService) {
         this.userService = userService;
         this.authService = authService;
         this.jwtUtils = jwtUtils;
@@ -61,7 +63,7 @@ public class AuthController {
         if (signUpRequest.getRoles() == null || signUpRequest.getRoles().isEmpty()) { // Use getRoleIds
             // Fetch the 'USER' role by name and get its ID
             Role userRole = roleService.findByName("ROLE_USER") // Assuming role service has findByName
-                                       .orElseThrow(() -> new EntityNotFoundException("Default role 'ROLE_USER' not found. Please create it."));
+                    .orElseThrow(() -> new EntityNotFoundException("Default role 'ROLE_USER' not found. Please create it."));
             signUpRequest.setRoles(Set.of(userRole.getId())); // Set the ID as a Set<Long>
         }
 
@@ -71,9 +73,7 @@ public class AuthController {
         if (Boolean.FALSE.equals(signUpRequest.isEnabled())) {
             signUpRequest.setEnabled(true);
         }
-
-              
-
+        
         userService.createUser(signUpRequest);
         return ResponseEntity.status(201).body(
                 new ApiResponse<>(201, "Usuario registrado exitosamente", null));

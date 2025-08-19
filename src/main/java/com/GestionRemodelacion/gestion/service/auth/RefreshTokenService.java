@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.auth;
+package com.gestionremodelacion.gestion.service.auth;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestionRemodelacion.gestion.model.RefreshToken;
-import com.GestionRemodelacion.gestion.model.User;
-import com.GestionRemodelacion.gestion.repository.RefreshTokenRepository;
-import com.GestionRemodelacion.gestion.repository.UserRepository;
-import com.GestionRemodelacion.gestion.security.exception.TokenRefreshException;
+import com.gestionremodelacion.gestion.model.RefreshToken;
+import com.gestionremodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.repository.RefreshTokenRepository;
+import com.gestionremodelacion.gestion.repository.UserRepository;
+import com.gestionremodelacion.gestion.security.exception.TokenRefreshException;
 
 /**
  * Servicio para manejo de refresh tokens con: - Rotación de tokens - Revocación
@@ -23,7 +23,8 @@ import com.GestionRemodelacion.gestion.security.exception.TokenRefreshException;
  */
 @Service
 public class RefreshTokenService {
-     private static final String USER_NOT_FOUND = "Usuario no encontrado con ID: ";
+
+    private static final String USER_NOT_FOUND = "Usuario no encontrado con ID: ";
     private static final String TOKEN_REVOKED_LOG = "Token revocado: {}";
     private static final Logger logger = LoggerFactory.getLogger(RefreshTokenService.class);
 
@@ -34,7 +35,7 @@ public class RefreshTokenService {
     private final UserRepository userRepository;
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
-                             UserRepository userRepository) {
+            UserRepository userRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.userRepository = userRepository;
     }
@@ -43,22 +44,22 @@ public class RefreshTokenService {
     public RefreshToken createRefreshToken(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(USER_NOT_FOUND + userId));
-        
+
         // Primero marcamos todos como usados
         refreshTokenRepository.markAllAsUsedByUserId(userId);
-        
+
         // Luego eliminamos los existentes
         refreshTokenRepository.deleteAllByUserId(userId);
-        
+
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(UUID.randomUUID().toString());
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setUsed(false);
-        
+
         RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
         logger.info("Nuevo refresh token creado para usuario: {}", userId);
-        
+
         return savedToken;
     }
 
@@ -72,13 +73,12 @@ public class RefreshTokenService {
 
         // 3. Eliminar físicamente el token viejo
         refreshTokenRepository.delete(oldToken);
-        
+
         // 4. Crear nuevo token
         return createRefreshToken(oldToken.getUser().getId());
     }
 
-
-        // --- Nuevo método para verificar expiración próxima ---
+    // --- Nuevo método para verificar expiración próxima ---
     public boolean isExpiringSoon(String token, Duration threshold) {
         RefreshToken refreshToken = findByToken(token);
         Instant now = Instant.now();
@@ -96,13 +96,13 @@ public class RefreshTokenService {
             logger.warn(TOKEN_REVOKED_LOG, token.getToken());
             throw new TokenRefreshException(token.getToken(), "Token expirado");
         }
-        
+
         if (token.isUsed()) {
             refreshTokenRepository.delete(token);
             logger.warn(TOKEN_REVOKED_LOG, token.getToken());
             throw new TokenRefreshException(token.getToken(), "Token ya utilizado");
         }
-        
+
         return token;
     }
 
@@ -123,10 +123,10 @@ public class RefreshTokenService {
     public void revokeAllUserTokens(Long userId) {
         // Primero marcamos todos como usados
         int marked = refreshTokenRepository.markAllAsUsedByUserId(userId);
-        
+
         // Luego eliminamos
         refreshTokenRepository.deleteAllByUserId(userId);
-        
+
         logger.info("Revocados {} refresh tokens para usuario ID: {}", marked, userId);
     }
 
@@ -138,8 +138,8 @@ public class RefreshTokenService {
 
     public boolean isRefreshTokenValid(Long userId) {
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByUserId(userId);
-        return refreshToken.isPresent() && 
-               !refreshToken.get().isUsed() && 
-               refreshToken.get().getExpiryDate().isAfter(Instant.now());
+        return refreshToken.isPresent()
+                && !refreshToken.get().isUsed()
+                && refreshToken.get().getExpiryDate().isAfter(Instant.now());
     }
 }

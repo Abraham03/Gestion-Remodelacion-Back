@@ -1,14 +1,16 @@
-package com.GestionRemodelacion.gestion.mapper;
+package com.gestionremodelacion.gestion.mapper;
 
 import java.util.Set;
 
 import org.mapstruct.Mapper;
 
-import com.GestionRemodelacion.gestion.dto.request.PermissionRequest;
-import com.GestionRemodelacion.gestion.dto.response.PermissionResponse;
-import com.GestionRemodelacion.gestion.model.Permission;
+import com.gestionremodelacion.gestion.dto.request.PermissionRequest;
+import com.gestionremodelacion.gestion.dto.response.PermissionResponse;
+import com.gestionremodelacion.gestion.model.Permission;
+
 @Mapper(componentModel = "spring")
 public interface PermissionMapper {
+
     // Convierte entidad Permission a PermissionResponse DTO
     PermissionResponse toPermissionResponse(Permission permission);
 

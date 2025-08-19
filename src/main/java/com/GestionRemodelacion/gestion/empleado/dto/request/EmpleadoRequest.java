@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.empleado.dto.request;
+package com.gestionremodelacion.gestion.empleado.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,11 +26,11 @@ public class EmpleadoRequest {
     @DecimalMin(value = "0.01", message = "El costo por hora debe ser mayor a 0")
     private BigDecimal costoPorHora;
 
-    private Boolean activo; 
+    private Boolean activo;
     private String notas;
 
     public EmpleadoRequest() {
-        this.activo = true; 
+        this.activo = true;
     }
 
     // Getters y Setters

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.mapper;
+package com.gestionremodelacion.gestion.mapper;
 
 import java.util.List;
 
@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
-import com.GestionRemodelacion.gestion.empleado.repository.EmpleadoRepository;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
-import com.GestionRemodelacion.gestion.horastrabajadas.model.HorasTrabajadas;
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
-import com.GestionRemodelacion.gestion.proyecto.repository.ProyectoRepository;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.empleado.repository.EmpleadoRepository;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
+import com.gestionremodelacion.gestion.horastrabajadas.model.HorasTrabajadas;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.proyecto.repository.ProyectoRepository;
 
 @Mapper(componentModel = "spring")
 public abstract class HorasTrabajadasMapper {
@@ -39,9 +39,11 @@ public abstract class HorasTrabajadasMapper {
     public abstract HorasTrabajadasResponse toHorasTrabajadasResponse(HorasTrabajadas horasTrabajadas);
 
     /**
-     * Mapea una lista de entidades HorasTrabajadas a una lista de DTOs HorasTrabajadasResponse.
+     * Mapea una lista de entidades HorasTrabajadas a una lista de DTOs
+     * HorasTrabajadasResponse.
      *
-     * @param horasTrabajadasList La lista de entidades HorasTrabajadas a mapear.
+     * @param horasTrabajadasList La lista de entidades HorasTrabajadas a
+     * mapear.
      * @return La lista de DTOs HorasTrabajadasResponse mapeados.
      */
     public abstract List<HorasTrabajadasResponse> toHorasTrabajadasResponseList(List<HorasTrabajadas> horasTrabajadasList);
@@ -49,7 +51,8 @@ public abstract class HorasTrabajadasMapper {
     /**
      * Mapea un DTO HorasTrabajadasRequest a una nueva entidad HorasTrabajadas.
      * Resuelve las entidades Empleado y Proyecto usando los IDs del request.
-     * 'id' y 'fechaRegistro' son ignorados ya que son manejados por la base de datos/ciclo de vida de la entidad.
+     * 'id' y 'fechaRegistro' son ignorados ya que son manejados por la base de
+     * datos/ciclo de vida de la entidad.
      *
      * @param request El DTO HorasTrabajadasRequest a mapear.
      * @return Una nueva entidad HorasTrabajadas.
@@ -61,9 +64,10 @@ public abstract class HorasTrabajadasMapper {
     public abstract HorasTrabajadas toHorasTrabajadas(HorasTrabajadasRequest request);
 
     /**
-     * Actualiza una entidad HorasTrabajadas existente desde un DTO HorasTrabajadasRequest.
-     * Resuelve las entidades Empleado y Proyecto usando los IDs del request si han cambiado.
-     * 'id' y 'fechaRegistro' son ignorados ya que no deben ser actualizados desde el request.
+     * Actualiza una entidad HorasTrabajadas existente desde un DTO
+     * HorasTrabajadasRequest. Resuelve las entidades Empleado y Proyecto usando
+     * los IDs del request si han cambiado. 'id' y 'fechaRegistro' son ignorados
+     * ya que no deben ser actualizados desde el request.
      *
      * @param request El DTO HorasTrabajadasRequest con los datos actualizados.
      * @param horasTrabajadas La entidad HorasTrabajadas existente a actualizar.
@@ -74,9 +78,7 @@ public abstract class HorasTrabajadasMapper {
     @Mapping(target = "proyecto", expression = "java(getProyectoById(request.getIdProyecto()))") // Siempre intentamos resolver
     public abstract void updateHorasTrabajadasFromRequest(HorasTrabajadasRequest request, @MappingTarget HorasTrabajadas horasTrabajadas);
 
-
     // --- Métodos auxiliares para buscar entidades por ID ---
-
     /**
      * Busca una entidad Empleado por su ID.
      *
@@ -107,6 +109,6 @@ public abstract class HorasTrabajadasMapper {
         }
         return proyectoRepository.findById(idProyecto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Proyecto no encontrado con ID: " + idProyecto));
-    }    
+    }
 
 }

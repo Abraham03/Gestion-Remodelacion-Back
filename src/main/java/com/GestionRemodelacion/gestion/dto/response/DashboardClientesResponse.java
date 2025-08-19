@@ -1,8 +1,9 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.util.List;
 
 public class DashboardClientesResponse {
+
     private final List<Object[]> clientesPorMes;
 
     public DashboardClientesResponse(List<Object[]> clientesPorMes) {

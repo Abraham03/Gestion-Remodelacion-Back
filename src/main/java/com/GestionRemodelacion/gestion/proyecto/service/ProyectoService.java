@@ -1,5 +1,4 @@
-package com.GestionRemodelacion.gestion.proyecto.service;
-
+package com.gestionremodelacion.gestion.proyecto.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,14 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.mapper.ProyectoMapper;
-import com.GestionRemodelacion.gestion.proyecto.dto.request.ProyectoRequest;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoExcelDTO;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoPdfDTO;
-import com.GestionRemodelacion.gestion.proyecto.dto.response.ProyectoResponse;
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
-import com.GestionRemodelacion.gestion.proyecto.repository.ProyectoRepository;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.mapper.ProyectoMapper;
+import com.gestionremodelacion.gestion.proyecto.dto.request.ProyectoRequest;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoExcelDTO;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoPdfDTO;
+import com.gestionremodelacion.gestion.proyecto.dto.response.ProyectoResponse;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.proyecto.repository.ProyectoRepository;
 
 @Service
 public class ProyectoService {
@@ -27,7 +26,7 @@ public class ProyectoService {
     private final ProyectoRepository proyectoRepository;
     private final ProyectoMapper proyectoMapper;
 
-    public ProyectoService(ProyectoRepository proyectoRepository,ProyectoMapper proyectoMapper) {
+    public ProyectoService(ProyectoRepository proyectoRepository, ProyectoMapper proyectoMapper) {
         this.proyectoRepository = proyectoRepository;
         this.proyectoMapper = proyectoMapper;
     }
@@ -74,7 +73,6 @@ public class ProyectoService {
         return ApiResponse.success(null);
     }
 
-
     private List<Proyecto> findAllProyectosForExport(String filter, String sort) {
         Sort sortObj = Sort.by(Sort.Direction.ASC, "nombreProyecto");
         if (sort != null && !sort.isEmpty()) {
@@ -91,8 +89,8 @@ public class ProyectoService {
         } else {
             return proyectoRepository.findAll(sortObj);
         }
-    } 
-    
+    }
+
     @Transactional(readOnly = true)
     public List<ProyectoPdfDTO> findProyectosForPdfExport(String filter, String sort) {
         List<Proyecto> proyectos = findAllProyectosForExport(filter, sort);
@@ -100,13 +98,13 @@ public class ProyectoService {
                 .map(ProyectoPdfDTO::new)
                 .collect(Collectors.toList());
     }
-    
-     @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public List<ProyectoExcelDTO> findProyectosForExcelExport(String filter, String sort) {
         List<Proyecto> proyectos = findAllProyectosForExport(filter, sort);
         return proyectos.stream()
                 .map(ProyectoExcelDTO::new)
                 .collect(Collectors.toList());
-    }   
+    }
 
 }

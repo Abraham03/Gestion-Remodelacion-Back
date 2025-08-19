@@ -8,7 +8,7 @@
         <version>3.4.6</version>
         <relativePath/> 
     </parent>
-    <groupId>com.GestionRemodelacion</groupId>
+    <groupId>com.gestionremodelacion</groupId>
     <artifactId>gestion</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gestion</name>

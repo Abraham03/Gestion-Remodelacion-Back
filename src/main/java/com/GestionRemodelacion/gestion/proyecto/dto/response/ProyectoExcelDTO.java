@@ -1,11 +1,11 @@
-package com.GestionRemodelacion.gestion.proyecto.dto.response;
+package com.gestionremodelacion.gestion.proyecto.dto.response;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.GestionRemodelacion.gestion.export.Exportable;
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.export.Exportable;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
 
 public class ProyectoExcelDTO implements Exportable {
 
@@ -18,9 +18,9 @@ public class ProyectoExcelDTO implements Exportable {
     @Override
     public List<String> getExportHeaders() {
         return Arrays.asList(
-            "Nombre Proyecto", "Cliente", "Responsable", "Estado", "Progreso (%)",
-            "Monto Contrato", "Monto Recibido", "Fecha Inicio", "Fecha Fin Estimada",
-            "Fecha Finalización Real", "Dirección", "Notas"
+                "Nombre Proyecto", "Cliente", "Responsable", "Estado", "Progreso (%)",
+                "Monto Contrato", "Monto Recibido", "Fecha Inicio", "Fecha Fin Estimada",
+                "Fecha Finalización Real", "Dirección", "Notas"
         );
     }
 
@@ -31,23 +31,23 @@ public class ProyectoExcelDTO implements Exportable {
         String fechaInicio = proyecto.getFechaInicio() != null ? proyecto.getFechaInicio().format(formatter) : "N/A";
         String fechaFinEstimada = proyecto.getFechaFinEstimada() != null ? proyecto.getFechaFinEstimada().format(formatter) : "N/A";
         String fechaFinalizacionReal = proyecto.getFechaFinalizacionReal() != null ? proyecto.getFechaFinalizacionReal().format(formatter) : "N/A";
-        
+
         String clienteNombre = proyecto.getCliente() != null ? proyecto.getCliente().getNombreCliente() : "N/A";
         String empleadoNombre = proyecto.getEmpleadoResponsable() != null ? proyecto.getEmpleadoResponsable().getNombreCompleto() : "N/A";
 
         return Arrays.asList(Arrays.asList(
-            proyecto.getNombreProyecto(),
-            clienteNombre,
-            empleadoNombre,
-            proyecto.getEstado().toString(),
-            proyecto.getProgresoPorcentaje().toString(),
-            proyecto.getMontoContrato().toString(),
-            proyecto.getMontoRecibido().toString(),
-            fechaInicio,
-            fechaFinEstimada,
-            fechaFinalizacionReal,
-            proyecto.getDireccionPropiedad(),
-            proyecto.getNotasProyecto()
+                proyecto.getNombreProyecto(),
+                clienteNombre,
+                empleadoNombre,
+                proyecto.getEstado().toString(),
+                proyecto.getProgresoPorcentaje().toString(),
+                proyecto.getMontoContrato().toString(),
+                proyecto.getMontoRecibido().toString(),
+                fechaInicio,
+                fechaFinEstimada,
+                fechaFinalizacionReal,
+                proyecto.getDireccionPropiedad(),
+                proyecto.getNotasProyecto()
         ));
     }
 }

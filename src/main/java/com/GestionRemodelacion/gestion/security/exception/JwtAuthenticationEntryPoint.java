@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.security.exception;
+package com.gestionremodelacion.gestion.security.exception;
 
 import java.io.IOException;
 
@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Maneja los errores de autenticación devolviendo una respuesta HTTP 401
- * cuando un usuario no autenticado intenta acceder a un recurso protegido.
+ * Maneja los errores de autenticación devolviendo una respuesta HTTP 401 cuando
+ * un usuario no autenticado intenta acceder a un recurso protegido.
  */
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {

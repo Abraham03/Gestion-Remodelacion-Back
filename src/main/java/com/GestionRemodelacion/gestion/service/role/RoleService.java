@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.role;
+package com.gestionremodelacion.gestion.service.role;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -12,17 +12,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.request.RoleRequest;
-import com.GestionRemodelacion.gestion.dto.response.RoleResponse;
-import com.GestionRemodelacion.gestion.mapper.RoleMapper;
-import com.GestionRemodelacion.gestion.model.Permission;
-import com.GestionRemodelacion.gestion.model.Role;
-import com.GestionRemodelacion.gestion.repository.PermissionRepository;
-import com.GestionRemodelacion.gestion.repository.RoleRepository;
+import com.gestionremodelacion.gestion.dto.request.RoleRequest;
+import com.gestionremodelacion.gestion.dto.response.RoleResponse;
+import com.gestionremodelacion.gestion.mapper.RoleMapper;
+import com.gestionremodelacion.gestion.model.Permission;
+import com.gestionremodelacion.gestion.model.Role;
+import com.gestionremodelacion.gestion.repository.PermissionRepository;
+import com.gestionremodelacion.gestion.repository.RoleRepository;
 
 @Service
 public class RoleService {
-     private final RoleRepository roleRepository;
+
+    private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final RoleMapper roleMapper;
 
@@ -44,7 +45,7 @@ public class RoleService {
         return rolesPage.map(roleMapper::toRoleResponse);
     }
 
-   @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public RoleResponse findById(Long id) {
         Role role = roleRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found with id " + id));
@@ -61,9 +62,9 @@ public class RoleService {
         Set<Permission> permissions = new HashSet<>();
         if (roleRequest.getPermissions() != null && !roleRequest.getPermissions().isEmpty()) {
             permissions = roleRequest.getPermissions().stream()
-                .map(permissionId -> permissionRepository.findById(permissionId)
+                    .map(permissionId -> permissionRepository.findById(permissionId)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: Permission '" + permissionId + "' not found.")))
-                .collect(Collectors.toSet());
+                    .collect(Collectors.toSet());
         }
         role.setPermissions(permissions); // Asignar los permisos después del mapeo
 
@@ -82,14 +83,14 @@ public class RoleService {
 
         roleMapper.updateRoleFromRequest(roleRequest, existingRole); // Usar el método del mapper para actualizar campos básicos
 
-    Set<Permission> newPermissions = new HashSet<>();
-    if (roleRequest.getPermissions() != null && !roleRequest.getPermissions().isEmpty()) {
-        // La sintaxis correcta para un stream que transforma IDs en entidades de Permiso
-        newPermissions = roleRequest.getPermissions().stream()
-            .map(permissionId -> permissionRepository.findById(permissionId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: Permission '" + permissionId + "' not found.")))
-            .collect(Collectors.toSet());
-    }
+        Set<Permission> newPermissions = new HashSet<>();
+        if (roleRequest.getPermissions() != null && !roleRequest.getPermissions().isEmpty()) {
+            // La sintaxis correcta para un stream que transforma IDs en entidades de Permiso
+            newPermissions = roleRequest.getPermissions().stream()
+                    .map(permissionId -> permissionRepository.findById(permissionId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error: Permission '" + permissionId + "' not found.")))
+                    .collect(Collectors.toSet());
+        }
         existingRole.setPermissions(newPermissions); // Reemplaza los permisos existentes
 
         Role updatedRole = roleRepository.save(existingRole);
@@ -108,6 +109,6 @@ public class RoleService {
     @Transactional(readOnly = true)
     public Optional<Role> findByName(String name) {
         return roleRepository.findByName(name);
-    }  
+    }
 
 }

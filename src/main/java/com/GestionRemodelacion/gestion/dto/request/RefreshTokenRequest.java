@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
 
 public class RefreshTokenRequest {
 

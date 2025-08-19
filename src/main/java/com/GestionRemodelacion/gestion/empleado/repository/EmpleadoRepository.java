@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.empleado.repository;
+package com.gestionremodelacion.gestion.empleado.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,21 +11,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
 
 @Repository
 public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
 
     /* ======================================================================= */
-    /* MÉTODOS PARA EmpleadoService (CRUD, Paginación, etc.)                   */
-    /* ======================================================================= */
-
+ /* MÉTODOS PARA EmpleadoService (CRUD, Paginación, etc.)                   */
+ /* ======================================================================= */
     Optional<Empleado> findByNombreCompleto(String nombre);
-    
+
     List<Empleado> findByActivo(Boolean activo);
-    
+
     long countByActivo(boolean activo);
-    
+
     Page<Empleado> findByNombreCompletoContainingIgnoreCaseOrRolCargoContainingIgnoreCaseOrTelefonoContactoContainingIgnoreCase(
             String nombre, String rol, String telefono, Pageable pageable);
 
@@ -33,9 +32,8 @@ public interface EmpleadoRepository extends JpaRepository<Empleado, Long> {
             String nombre, String rol, String telefono, Sort sort);
 
     /* ======================================================================= */
-    /* MÉTODOS EXCLUSIVOS PARA DashboardService (Agregaciones)                 */
-    /* ======================================================================= */
-
+ /* MÉTODOS EXCLUSIVOS PARA DashboardService (Agregaciones)                 */
+ /* ======================================================================= */
     @Query("SELECT AVG(e.costoPorHora) FROM Empleado e WHERE e.activo = true")
     Double findAvgCostoPorHora();
 

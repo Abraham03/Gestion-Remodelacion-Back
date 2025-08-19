@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.horastrabajadas.controller;
+package com.gestionremodelacion.gestion.horastrabajadas.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping; 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.export.ExporterService;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasExportDTO;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
-import com.GestionRemodelacion.gestion.horastrabajadas.service.HorasTrabajadasService;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.export.ExporterService;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasExportDTO;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
+import com.gestionremodelacion.gestion.horastrabajadas.service.HorasTrabajadasService;
 import com.itextpdf.text.DocumentException;
 
 import jakarta.validation.Valid;
@@ -44,47 +44,47 @@ public class HorasTrabajadasController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('HORASTRABAJADAS_READ')") 
+    @PreAuthorize("hasAuthority('HORASTRABAJADAS_READ')")
     public ResponseEntity<ApiResponse<Page<HorasTrabajadasResponse>>> getAllHorasTrabajadas(Pageable pageable,
-    @RequestParam(name = "filter", required = false) String filter) { 
+            @RequestParam(name = "filter", required = false) String filter) {
         Page<HorasTrabajadasResponse> horasTrabajadasPage = horasTrabajadasService.getAllHorasTrabajadas(pageable, filter);
         return ResponseEntity.ok(ApiResponse.success(horasTrabajadasPage));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('HORASTRABAJADAS_READ')") 
+    @PreAuthorize("hasAuthority('HORASTRABAJADAS_READ')")
     public ResponseEntity<HorasTrabajadasResponse> getHorasTrabajadasById(@PathVariable Long id) {
         HorasTrabajadasResponse horasTrabajadas = horasTrabajadasService.getHorasTrabajadasById(id);
         return ResponseEntity.ok(horasTrabajadas);
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('HORASTRABAJADAS_CREATE')") 
+    @PreAuthorize("hasAuthority('HORASTRABAJADAS_CREATE')")
     public ResponseEntity<HorasTrabajadasResponse> createHorasTrabajadas(@Valid @RequestBody HorasTrabajadasRequest horasTrabajadasRequest) {
         HorasTrabajadasResponse createdHorasTrabajadas = horasTrabajadasService.createHorasTrabajadas(horasTrabajadasRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdHorasTrabajadas);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('HORASTRABAJADAS_UPDATE')") 
+    @PreAuthorize("hasAuthority('HORASTRABAJADAS_UPDATE')")
     public ResponseEntity<HorasTrabajadasResponse> updateHorasTrabajadas(@PathVariable Long id, @Valid @RequestBody HorasTrabajadasRequest horasTrabajadasRequest) {
         HorasTrabajadasResponse updatedHorasTrabajadas = horasTrabajadasService.updateHorasTrabajadas(id, horasTrabajadasRequest);
         return ResponseEntity.ok(updatedHorasTrabajadas);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('HORASTRABAJADAS_DELETE')") 
+    @PreAuthorize("hasAuthority('HORASTRABAJADAS_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteHorasTrabajadas(@PathVariable Long id) {
         ApiResponse<Void> apiResponse = horasTrabajadasService.deleteHorasTrabajadas(id);
         return ResponseEntity.ok(apiResponse);
     }
 
-  @GetMapping("/export/excel")
+    @GetMapping("/export/excel")
     @PreAuthorize("hasAuthority('HORASTRABAJADAS_READ')")
     public ResponseEntity<byte[]> exportToExcel(
             @RequestParam(name = "filter", required = false) String filter,
             @RequestParam(name = "sort", required = false) String sort) throws IOException {
-        
+
         List<HorasTrabajadasExportDTO> data = horasTrabajadasService.findHorasTrabajadasForExport(filter, sort);
         ByteArrayOutputStream stream = exporterService.exportToExcel(data, "Reporte deHoras Trabajadas");
 
@@ -115,6 +115,6 @@ public class HorasTrabajadasController {
         headers.setContentType(MediaType.APPLICATION_PDF);
 
         return ResponseEntity.ok().headers(headers).body(stream.toByteArray());
-    }    
+    }
 
 }

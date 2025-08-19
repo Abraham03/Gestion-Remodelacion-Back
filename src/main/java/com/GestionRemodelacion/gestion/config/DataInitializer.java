@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.config;
+package com.gestionremodelacion.gestion.config;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -9,12 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestionRemodelacion.gestion.model.Permission;
-import com.GestionRemodelacion.gestion.model.Role;
-import com.GestionRemodelacion.gestion.model.User;
-import com.GestionRemodelacion.gestion.repository.PermissionRepository;
-import com.GestionRemodelacion.gestion.repository.RoleRepository;
-import com.GestionRemodelacion.gestion.repository.UserRepository;
+import com.gestionremodelacion.gestion.model.Permission;
+import com.gestionremodelacion.gestion.model.Role;
+import com.gestionremodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.repository.PermissionRepository;
+import com.gestionremodelacion.gestion.repository.RoleRepository;
+import com.gestionremodelacion.gestion.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
 
@@ -24,24 +24,24 @@ public class DataInitializer {
     private final RoleRepository roleRepository;
     private final PermissionRepository permissionRepository;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;   
-    
+    private final PasswordEncoder passwordEncoder;
+
     public DataInitializer(RoleRepository roleRepository,
-                           PermissionRepository permissionRepository,
-                           UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+            PermissionRepository permissionRepository,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder) {
         this.roleRepository = roleRepository;
         this.permissionRepository = permissionRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    
+
     @PostConstruct
     @Transactional
     public void init() {
         // 1. Definir y guardar permisos
         Set<String> allPermissionsNames = new HashSet<>(Arrays.asList(
-                "USER_READ", "USER_CREATE", "USER_UPDATE", "USER_DELETE", 
+                "USER_READ", "USER_CREATE", "USER_UPDATE", "USER_DELETE",
                 "ROLE_READ", "ROLE_CREATE", "ROLE_UPDATE", "ROLE_DELETE",
                 "PERMISSION_READ", "PERMISSION_CREATE", "PERMISSION_UPDATE", "PERMISSION_DELETE",
                 "PROYECTO_READ", "PROYECTO_CREATE", "PROYECTO_UPDATE", "PROYECTO_DELETE",
@@ -54,12 +54,12 @@ public class DataInitializer {
         // Obtener o crear todos los permisos y asegurarse de que estén gestionados por JPA
         Set<Permission> allPermissions = allPermissionsNames.stream()
                 .map(name -> permissionRepository.findByName(name) // Esto retorna Optional<Permission>
-                        .orElseGet(() -> { // Si el Optional está vacío, se ejecuta este Supplier
-                            Permission newPermission = new Permission();
-                            newPermission.setName(name);
-                            newPermission.setDescription("Permiso para " + name.replace("_", " ").toLowerCase());
-                            return permissionRepository.save(newPermission); // Guarda y retorna el nuevo permiso
-                        }))
+                .orElseGet(() -> { // Si el Optional está vacío, se ejecuta este Supplier
+                    Permission newPermission = new Permission();
+                    newPermission.setName(name);
+                    newPermission.setDescription("Permiso para " + name.replace("_", " ").toLowerCase());
+                    return permissionRepository.save(newPermission); // Guarda y retorna el nuevo permiso
+                }))
                 .collect(Collectors.toSet());
 
         // 2. Definir y guardar el rol ADMIN y asignar todos los permisos
@@ -68,20 +68,20 @@ public class DataInitializer {
         // sería la forma correcta si `findByName` en `RoleRepository` retorna directamente `Role` y no `Optional<Role>`.
         // Asumiendo que `roleRepository.findByName("ADMIN")` retorna `Optional<Role>`:
         Role adminRole = roleRepository.findByName("ADMIN")
-            .orElseGet(() -> {
-                Role newAdminRole = new Role();
-                newAdminRole.setName("ADMIN");
-                newAdminRole.setDescription("Administrador del sistema con acceso completo.");
-                newAdminRole.setPermissions(allPermissions); // Asigna todos los permisos al rol nuevo
-                return roleRepository.save(newAdminRole);
-            });
+                .orElseGet(() -> {
+                    Role newAdminRole = new Role();
+                    newAdminRole.setName("ADMIN");
+                    newAdminRole.setDescription("Administrador del sistema con acceso completo.");
+                    newAdminRole.setPermissions(allPermissions); // Asigna todos los permisos al rol nuevo
+                    return roleRepository.save(newAdminRole);
+                });
 
         // Si el rol ADMIN ya existía, asegúrate de que tenga todos los permisos
         // Esto es importante si añades nuevos permisos en futuras versiones y quieres que ADMIN los tenga automáticamente.
         // Solo actualiza si el conjunto de permisos difiere para evitar writes innecesarios.
         if (!adminRole.getPermissions().equals(allPermissions)) {
-             adminRole.setPermissions(allPermissions);
-             roleRepository.save(adminRole);
+            adminRole.setPermissions(allPermissions);
+            roleRepository.save(adminRole);
         }
 
         // 3. Crear el usuario ADMIN si no existe y asignarle el rol ADMIN

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.controller.dashboard;
+package com.gestionremodelacion.gestion.controller.dashboard;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.dto.response.DashboardClientesResponse;
-import com.GestionRemodelacion.gestion.dto.response.DashboardSummaryResponse;
-import com.GestionRemodelacion.gestion.service.dashboard.DashboardService;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.dto.response.DashboardClientesResponse;
+import com.gestionremodelacion.gestion.dto.response.DashboardSummaryResponse;
+import com.gestionremodelacion.gestion.service.dashboard.DashboardService;
 
 @RestController
 @RequestMapping("/api/dashboard")
@@ -25,11 +25,11 @@ public class DashboardController {
     }
 
     @GetMapping("/summary")
-    @PreAuthorize("hasAuthority('DASHBOARD_VIEW')") 
+    @PreAuthorize("hasAuthority('DASHBOARD_VIEW')")
     // ✅ CAMBIO: Se añade el @RequestParam opcional para el mes.
-    public ResponseEntity<ApiResponse<DashboardSummaryResponse>> getDashboardSummary(@RequestParam(name = "year", required = false) Integer year,@RequestParam(name = "month", required = false) Integer month) {
+    public ResponseEntity<ApiResponse<DashboardSummaryResponse>> getDashboardSummary(@RequestParam(name = "year", required = false) Integer year, @RequestParam(name = "month", required = false) Integer month) {
         DashboardSummaryResponse summary = dashboardService.getDashboardSummary(year, month);
-        
+
         return ResponseEntity.ok(ApiResponse.success(summary));
     }
 
@@ -38,10 +38,10 @@ public class DashboardController {
     public ResponseEntity<ApiResponse<DashboardClientesResponse>> getClientesSummary(
             @RequestParam(name = "year", required = false) Integer year,
             @RequestParam(name = "month", required = false) Integer month) {
-        
+
         DashboardClientesResponse summary = dashboardService.getDashboardClientesSummary(year, month);
         return ResponseEntity.ok(ApiResponse.success(summary));
-    }    
+    }
 
     // ✅ CAMBIO: Nuevo endpoint para obtener solo los años.
     @GetMapping("/years")

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.horastrabajadas.dto.response;
+package com.gestionremodelacion.gestion.horastrabajadas.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDate; // Importar LocalDate
@@ -17,8 +17,8 @@ public class HorasTrabajadasResponse {
     private LocalDateTime fechaRegistro; // Cambiado a LocalDateTime
 
     public HorasTrabajadasResponse(Long id, Long idEmpleado, String nombreEmpleado, Long idProyecto,
-                                   String nombreProyecto, LocalDate fecha, BigDecimal horas, String actividadRealizada,
-                                   LocalDateTime fechaRegistro) { // Constructor con LocalDate y LocalDateTime
+            String nombreProyecto, LocalDate fecha, BigDecimal horas, String actividadRealizada,
+            LocalDateTime fechaRegistro) { // Constructor con LocalDate y LocalDateTime
         this.id = id;
         this.idEmpleado = idEmpleado;
         this.nombreEmpleado = nombreEmpleado;

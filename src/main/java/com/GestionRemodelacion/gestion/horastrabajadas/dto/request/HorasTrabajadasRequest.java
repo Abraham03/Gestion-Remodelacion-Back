@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.horastrabajadas.dto.request;
+package com.gestionremodelacion.gestion.horastrabajadas.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

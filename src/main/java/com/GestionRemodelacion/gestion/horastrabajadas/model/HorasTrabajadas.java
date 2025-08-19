@@ -1,11 +1,11 @@
-package com.GestionRemodelacion.gestion.horastrabajadas.model;
+package com.gestionremodelacion.gestion.horastrabajadas.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime; 
+import java.time.LocalDateTime;
 
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

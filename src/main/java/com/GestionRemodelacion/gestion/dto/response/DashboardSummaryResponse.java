@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,20 +13,20 @@ public class DashboardSummaryResponse {
     private final BigDecimal costoMateriales;
     private final BigDecimal otrosGastos;
     private final Double costoPromedioPorHora;
-    
+
     // --- Datos para Gráficos y Tablas ---
     private final List<Object[]> empleadosPorRol;
     private final List<Object[]> horasPorProyecto;
     private final List<Object[]> horasPorEmpleado;
     private final List<Object[]> proyectosPorEstado;
     private final List<Object[]> horasPorEmpleadoProyecto;
-    
+
     public DashboardSummaryResponse(Long totalProyectos, Long empleadosActivos, BigDecimal balanceFinanciero,
-                                  BigDecimal montoRecibido, BigDecimal costoMateriales, BigDecimal otrosGastos,
-                                  List<Object[]> empleadosPorRol,
-                                  List<Object[]> horasPorProyecto, List<Object[]> horasPorEmpleado,
-                                  List<Object[]> proyectosPorEstado, List<Object[]> horasPorEmpleadoProyecto,
-                                  Double costoPromedioPorHora) {
+            BigDecimal montoRecibido, BigDecimal costoMateriales, BigDecimal otrosGastos,
+            List<Object[]> empleadosPorRol,
+            List<Object[]> horasPorProyecto, List<Object[]> horasPorEmpleado,
+            List<Object[]> proyectosPorEstado, List<Object[]> horasPorEmpleadoProyecto,
+            Double costoPromedioPorHora) {
         this.totalProyectos = totalProyectos;
         this.empleadosActivos = empleadosActivos;
         this.balanceFinanciero = balanceFinanciero;
@@ -41,7 +41,6 @@ public class DashboardSummaryResponse {
         this.costoPromedioPorHora = costoPromedioPorHora;
     }
 
-    
     public Long getTotalProyectos() {
         return totalProyectos;
     }

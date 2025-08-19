@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.model;
+package com.gestionremodelacion.gestion.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 /**
- * Entidad que representa un permiso en el sistema.
- * Los permisos definen acciones específicas que pueden ser asignadas a roles.
+ * Entidad que representa un permiso en el sistema. Los permisos definen
+ * acciones específicas que pueden ser asignadas a roles.
  */
 @Entity
 @Table(name = "permissions")
@@ -48,6 +48,5 @@ public class Permission {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
 }

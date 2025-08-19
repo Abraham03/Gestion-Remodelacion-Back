@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.time.LocalDate;
 
@@ -13,14 +13,14 @@ public class ProyectoDashboardDto {
     private Integer progresoPorcentaje; // <--- CHANGE THIS FIELD TO 'int'
 
     public ProyectoDashboardDto(
-        Long id,
-        String nombreProyecto,
-        String descripcion,
-        LocalDate fechaInicio,
-        LocalDate fechaFinEstimada,
-        String estado,
-        Integer progresoPorcentaje) { // <--- CHANGE THIS PARAMETER TO 'int'
-        
+            Long id,
+            String nombreProyecto,
+            String descripcion,
+            LocalDate fechaInicio,
+            LocalDate fechaFinEstimada,
+            String estado,
+            Integer progresoPorcentaje) { // <--- CHANGE THIS PARAMETER TO 'int'
+
         this.id = id;
         this.nombreProyecto = nombreProyecto;
         this.descripcion = descripcion;
@@ -31,18 +31,53 @@ public class ProyectoDashboardDto {
     }
 
     // --- Ensure Getters and Setters also reflect the primitive 'int' type ---
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getNombreProyecto() { return nombreProyecto; }
-    public void setNombreProyecto(String nombreProyecto) { this.nombreProyecto = nombreProyecto; }
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    public LocalDate getFechaInicio() { return fechaInicio; }
-    public void setFechaInicio(LocalDate fechaInicio) { this.fechaInicio = fechaInicio; }
-    public LocalDate getFechaFinEstimada() { return fechaFinEstimada; }
-    public void setFechaFinEstimada(LocalDate fechaFinEstimada) { this.fechaFinEstimada = fechaFinEstimada; }
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombreProyecto() {
+        return nombreProyecto;
+    }
+
+    public void setNombreProyecto(String nombreProyecto) {
+        this.nombreProyecto = nombreProyecto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public LocalDate getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(LocalDate fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public LocalDate getFechaFinEstimada() {
+        return fechaFinEstimada;
+    }
+
+    public void setFechaFinEstimada(LocalDate fechaFinEstimada) {
+        this.fechaFinEstimada = fechaFinEstimada;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 
     public Integer getProgresoPorcentaje() { // <--- CHANGE THIS GETTER TO 'int'
         return progresoPorcentaje;

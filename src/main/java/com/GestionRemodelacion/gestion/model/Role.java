@@ -1,4 +1,5 @@
-package com.GestionRemodelacion.gestion.model;
+package com.gestionremodelacion.gestion.model;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,8 +15,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 /**
- * Entidad que representa un rol en el sistema.
- * Los roles agrupan permisos y son asignados a usuarios.
+ * Entidad que representa un rol en el sistema. Los roles agrupan permisos y son
+ * asignados a usuarios.
  */
 @Entity
 @Table(name = "roles")
@@ -34,9 +35,9 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "role_permissions",
-        joinColumns = @JoinColumn(name = "role_id"),
-        inverseJoinColumns = @JoinColumn(name = "permission_id")
+            name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
     )
     private Set<Permission> permissions = new HashSet<>();
 

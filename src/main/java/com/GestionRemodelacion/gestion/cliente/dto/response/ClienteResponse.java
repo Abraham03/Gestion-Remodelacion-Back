@@ -1,6 +1,7 @@
-package com.GestionRemodelacion.gestion.cliente.dto.response;
+package com.gestionremodelacion.gestion.cliente.dto.response;
 
 import java.time.LocalDateTime;
+
 public class ClienteResponse {
 
     private Long id;
@@ -18,7 +19,6 @@ public class ClienteResponse {
         this.notas = notas;
         this.fechaRegistro = fechaRegistro;
     }
-
 
     // Getters y Setters
     public Long getId() {

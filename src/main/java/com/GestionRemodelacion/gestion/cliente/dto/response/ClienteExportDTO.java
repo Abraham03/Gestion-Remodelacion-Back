@@ -1,15 +1,15 @@
-package com.GestionRemodelacion.gestion.cliente.dto.response;
+package com.gestionremodelacion.gestion.cliente.dto.response;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.GestionRemodelacion.gestion.cliente.model.Cliente;
-import com.GestionRemodelacion.gestion.export.Exportable;
+import com.gestionremodelacion.gestion.cliente.model.Cliente;
+import com.gestionremodelacion.gestion.export.Exportable;
 
 public class ClienteExportDTO implements Exportable {
 
-  private final Cliente cliente;
+    private final Cliente cliente;
 
     public ClienteExportDTO(Cliente cliente) {
         this.cliente = cliente;
@@ -27,12 +27,12 @@ public class ClienteExportDTO implements Exportable {
                 : "";
 
         return Arrays.asList(Arrays.asList(
-            this.cliente.getNombreCliente(),
-            this.cliente.getTelefonoContacto(),
-            this.cliente.getDireccion(),
-            this.cliente.getNotas(),
-            fechaFormateada
+                this.cliente.getNombreCliente(),
+                this.cliente.getTelefonoContacto(),
+                this.cliente.getDireccion(),
+                this.cliente.getNotas(),
+                fechaFormateada
         ));
-    }   
+    }
 
 }

@@ -1,10 +1,10 @@
-package com.GestionRemodelacion.gestion.proyecto.dto.request;
+package com.gestionremodelacion.gestion.proyecto.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.GestionRemodelacion.gestion.proyecto.model.Proyecto;
+import com.gestionremodelacion.gestion.proyecto.model.Proyecto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
@@ -30,7 +30,7 @@ public class ProyectoRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaInicio;
-    
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate fechaFinEstimada;
 

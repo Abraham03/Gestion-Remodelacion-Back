@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.controller.user;
+package com.gestionremodelacion.gestion.controller.user;
 
 import java.util.Set;
 
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.request.UserRequest;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.dto.response.UserResponse;
-import com.GestionRemodelacion.gestion.service.user.UserService;
+import com.gestionremodelacion.gestion.dto.request.UserRequest;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.dto.response.UserResponse;
+import com.gestionremodelacion.gestion.service.user.UserService;
 
 import jakarta.validation.Valid;
 
@@ -38,8 +38,8 @@ public class UserController {
     @PreAuthorize("hasAuthority('USER_READ')")
     // Change to return Page<UserResponse> and accept Pageable
     public ResponseEntity<ApiResponse<Page<UserResponse>>> getAllUsers(
-        @PageableDefault(size = 10, sort = "id") Pageable pageable, // Default size and sort
-        @RequestParam(required = false) String searchTerm // Optional search term
+            @PageableDefault(size = 10, sort = "id") Pageable pageable, // Default size and sort
+            @RequestParam(required = false) String searchTerm // Optional search term
     ) {
         // You'll need to modify your UserService to accept Pageable and searchTerm
         Page<UserResponse> usersPage = userService.findAll(pageable, searchTerm);
@@ -51,26 +51,21 @@ public class UserController {
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable Long id) {
         UserResponse user = userService.findById(id);
         return ResponseEntity.ok(ApiResponse.success(user));
-    }    
- 
-
+    }
 
     @PostMapping
     @PreAuthorize("hasAuthority('USER_CREATE')") // Modificado: Requiere el permiso 'USER_CREATE'
-    public ResponseEntity<ApiResponse<UserResponse>> createUser( @Valid @RequestBody UserRequest userRequest) {
-        UserResponse createdUser = userService.createUser(userRequest); 
+    public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody UserRequest userRequest) {
+        UserResponse createdUser = userService.createUser(userRequest);
         return ResponseEntity.ok(ApiResponse.success(createdUser));
-    } 
+    }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER_UPDATE')") 
+    @PreAuthorize("hasAuthority('USER_UPDATE')")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest) {
         UserResponse updatedUser = userService.updateUser(id, userRequest);
         return ResponseEntity.ok(ApiResponse.success(updatedUser));
     }
-
-
-    
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('USER_DELETE')") // Modificado: Requiere el permiso 'USER_DELETE'
@@ -81,7 +76,6 @@ public class UserController {
 
     // Si tienes este método, asegúrate de que el body sea un Set<String>
     // y no un UserRequest completo si lo usas con un método userService.updateRolesForUser
-    
     @PutMapping("/{id}/roles")
     @PreAuthorize("hasAuthority('USER_UPDATE_ROLES')")
     public ResponseEntity<ApiResponse<UserResponse>> updateUserRoles(@PathVariable Long id, @RequestBody Set<String> roleNames) {
@@ -89,7 +83,5 @@ public class UserController {
         UserResponse updatedUser = userService.updateUserRoles(id, roleNames);
         return ResponseEntity.ok(ApiResponse.success(updatedUser));
     }
-    
-
 
 }

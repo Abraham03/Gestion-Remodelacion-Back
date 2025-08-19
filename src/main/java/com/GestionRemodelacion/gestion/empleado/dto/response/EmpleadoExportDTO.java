@@ -1,15 +1,16 @@
-package com.GestionRemodelacion.gestion.empleado.dto.response;
+package com.gestionremodelacion.gestion.empleado.dto.response;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
-import com.GestionRemodelacion.gestion.export.Exportable;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.export.Exportable;
 
-public class EmpleadoExportDTO implements Exportable{
+public class EmpleadoExportDTO implements Exportable {
 
     private final Empleado empleado;
+
     public EmpleadoExportDTO(Empleado empleado) {
         this.empleado = empleado;
     }
@@ -26,17 +27,17 @@ public class EmpleadoExportDTO implements Exportable{
                 : "";
         String fechaRegistroFormateada = this.empleado.getFechaRegistro() != null
                 ? this.empleado.getFechaRegistro().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                : "";    
-                    
+                : "";
+
         return Arrays.asList(Arrays.asList(
-            this.empleado.getNombreCompleto(),
-            this.empleado.getTelefonoContacto(),
-            this.empleado.getRolCargo(),
-            this.empleado.getTelefonoContacto(),
-            fechaFormateada,
-            this.empleado.getCostoPorHora().toString(),
-            this.empleado.getActivo().toString(),
-            fechaRegistroFormateada
+                this.empleado.getNombreCompleto(),
+                this.empleado.getTelefonoContacto(),
+                this.empleado.getRolCargo(),
+                this.empleado.getTelefonoContacto(),
+                fechaFormateada,
+                this.empleado.getCostoPorHora().toString(),
+                this.empleado.getActivo().toString(),
+                fechaRegistroFormateada
         ));
     }
 

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,19 +8,20 @@ public class JwtResponse {
 
     private String accessToken;
     private String type = "Bearer";
-    private Long userId ;
+    private Long userId;
     private String username;
     private List<String> autorities;
     private Date expirationDate;
 
     // Constructor principal
-    public JwtResponse(String accessToken, Long userId , String username, List<String> roles, Date expirationDate) {
+    public JwtResponse(String accessToken, Long userId, String username, List<String> roles, Date expirationDate) {
         this.accessToken = accessToken;
-        this.userId  = userId ;
+        this.userId = userId;
         this.username = username;
         this.autorities = roles;
         this.expirationDate = expirationDate;
     }
+
     public JwtResponse(String token) {
         this.accessToken = token;
     }
@@ -42,11 +43,11 @@ public class JwtResponse {
     }
 
     public Long getId() {
-        return userId ;
+        return userId;
     }
 
     public void setId(Long id) {
-        this.userId  = id;
+        this.userId = id;
     }
 
     public String getUsername() {
@@ -68,8 +69,5 @@ public class JwtResponse {
     public String getExpirationDate() {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(expirationDate);
     }
-    
-
-
 
 }

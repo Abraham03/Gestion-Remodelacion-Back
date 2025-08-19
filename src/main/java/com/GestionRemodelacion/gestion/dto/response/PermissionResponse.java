@@ -1,13 +1,10 @@
-package com.GestionRemodelacion.gestion.dto.response;
-
+package com.gestionremodelacion.gestion.dto.response;
 
 public class PermissionResponse {
 
     private Long id;
     private String name;
-    private String description;   
-
-    
+    private String description;
 
     public PermissionResponse() {
     }
@@ -41,7 +38,5 @@ public class PermissionResponse {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
 
 }

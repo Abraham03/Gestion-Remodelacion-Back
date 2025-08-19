@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
 
 /**
  * DTO para la solicitud de autenticación (login)
@@ -29,7 +29,5 @@ public class LoginRequest {
     public void setPassword(String password) {
         this.password = password;
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.security.jwt;
+package com.gestionremodelacion.gestion.security.jwt;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -14,10 +14,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.GestionRemodelacion.gestion.model.RefreshToken;
-import com.GestionRemodelacion.gestion.security.exception.TokenRefreshException;
-import com.GestionRemodelacion.gestion.service.auth.RefreshTokenService;
-import com.GestionRemodelacion.gestion.service.auth.TokenBlacklistService;
+import com.gestionremodelacion.gestion.model.RefreshToken;
+import com.gestionremodelacion.gestion.security.exception.TokenRefreshException;
+import com.gestionremodelacion.gestion.service.auth.RefreshTokenService;
+import com.gestionremodelacion.gestion.service.auth.TokenBlacklistService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -66,14 +66,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String username = jwtUtils.getUserNameFromJwtToken(jwt);
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-
-            Optional<RefreshToken> refreshToken = refreshTokenService.findByUser(username);
-            if (refreshToken.isPresent() && 
-                (refreshToken.get().getExpiryDate().isBefore(Instant.now()) || 
-                 refreshToken.get().isUsed())) {
-                throw new TokenRefreshException(jwt, "Refresh token inválido");
-            }                
-
+                Optional<RefreshToken> refreshToken = refreshTokenService.findByUser(username);
+                if (refreshToken.isPresent()
+                        && (refreshToken.get().getExpiryDate().isBefore(Instant.now())
+                        || refreshToken.get().isUsed())) {
+                    throw new TokenRefreshException(jwt, "Refresh token inválido");
+                }
 
                 // 3. Establecer autenticación
                 UsernamePasswordAuthenticationToken authentication

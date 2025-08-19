@@ -1,11 +1,11 @@
-package com.GestionRemodelacion.gestion.proyecto.model;
+package com.gestionremodelacion.gestion.proyecto.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.GestionRemodelacion.gestion.cliente.model.Cliente;
-import com.GestionRemodelacion.gestion.empleado.model.Empleado;
+import com.gestionremodelacion.gestion.cliente.model.Cliente;
+import com.gestionremodelacion.gestion.empleado.model.Empleado;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 
 @Entity
 @Table(name = "Proyectos")

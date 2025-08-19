@@ -1,9 +1,11 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
 public class SignupRequest {
 
     @NotBlank(message = "El nombre de usuario no puede estar vacío")

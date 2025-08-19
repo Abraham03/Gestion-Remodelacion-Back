@@ -1,11 +1,11 @@
-package com.GestionRemodelacion.gestion.config;
+package com.gestionremodelacion.gestion.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Clase de configuración para las propiedades relacionadas con JWT.
- * Las propiedades se cargan desde application.yml con el prefijo "jwt"
+ * Clase de configuración para las propiedades relacionadas con JWT. Las
+ * propiedades se cargan desde application.yml con el prefijo "jwt"
  */
 @Configuration
 @ConfigurationProperties(prefix = "jwt")
@@ -17,7 +17,7 @@ public class JwtProperties {
     private String header;
     private String prefix;
     private long refreshExpirationMs;
-     private long blacklistCleanupInterval = 3600000; // Valor por defecto
+    private long blacklistCleanupInterval = 3600000; // Valor por defecto
 
     public long getRefreshExpirationMs() {
         return refreshExpirationMs;
@@ -74,6 +74,5 @@ public class JwtProperties {
     public void setBlacklistCleanupInterval(long blacklistCleanupInterval) {
         this.blacklistCleanupInterval = blacklistCleanupInterval;
     }
-
 
 }

@@ -1,8 +1,8 @@
-package com.GestionRemodelacion.gestion.empleado.model;
+package com.gestionremodelacion.gestion.empleado.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime; 
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,7 +53,6 @@ public class Empleado {
     protected void onCreate() {
         this.fechaRegistro = LocalDateTime.now();
     }
-
 
     public Long getId() {
         return id;
@@ -119,11 +118,11 @@ public class Empleado {
         this.notas = notas;
     }
 
-    public LocalDateTime getFechaRegistro() { 
+    public LocalDateTime getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { 
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 }

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.time.LocalDateTime;
 
@@ -8,7 +8,6 @@ public class ApiResponse<T> {
     private int status;
     private String message;
     private T data;
-
 
     public ApiResponse(int status, String message, T data) {
         this.timestamp = LocalDateTime.now();
@@ -56,7 +55,5 @@ public class ApiResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.export;
+package com.gestionremodelacion.gestion.export;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class ExporterService {
             CellStyle cellStyle = workbook.createCellStyle();
             cellStyle.setBorderBottom(BorderStyle.THIN);
             cellStyle.setBottomBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
-            
+
             int rowIdx = 0;
 
             try (InputStream is = getClass().getResourceAsStream("/images/logo_Excel.png")) {
@@ -92,9 +92,9 @@ public class ExporterService {
                     anchor.setRow2(3);
 
                     drawing.createPicture(anchor, pictureIdx);
-                    
+
                     sheet.addMergedRegion(new CellRangeAddress(0, 2, 0, 1));
-                    rowIdx = 3; 
+                    rowIdx = 3;
                 } else {
                     System.err.println("Error: No se pudo encontrar el logo en la ruta: /images/logo_Excel.png");
                 }
@@ -106,7 +106,7 @@ public class ExporterService {
                 List<String> headers = data.get(0).getExportHeaders();
                 if (headers != null && !headers.isEmpty()) {
                     int startColumn = 2;
-                    
+
                     // Agregar nombre de la empresa
                     Row companyRow = sheet.createRow(1);
                     Cell companyCell = companyRow.createCell(startColumn);
@@ -132,11 +132,11 @@ public class ExporterService {
                     Cell dateCell = dateRow.createCell(startColumn);
                     dateCell.setCellValue("Generado el: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")));
                     sheet.addMergedRegion(new CellRangeAddress(dateRow.getRowNum(), dateRow.getRowNum(), startColumn, headers.size() - 1));
-                    
-                    rowIdx = 5; 
+
+                    rowIdx = 5;
                 }
             }
-            
+
             Row headerRow = sheet.createRow(rowIdx++);
             for (int col = 0; col < data.get(0).getExportHeaders().size(); col++) {
                 Cell cell = headerRow.createCell(col);
@@ -170,14 +170,20 @@ public class ExporterService {
     }
 
     /**
-     * Exporta los datos de una lista de objetos que implementan {@link Exportable} a un documento PDF en memoria. El documento incluye un
-     * encabezado con un logo, título, fecha y una tabla con los datos proporcionados.
+     * Exporta los datos de una lista de objetos que implementan
+     * {@link Exportable} a un documento PDF en memoria. El documento incluye un
+     * encabezado con un logo, título, fecha y una tabla con los datos
+     * proporcionados.
      *
-     * @param data  Una lista de objetos de cualquier tipo que implementen la interfaz Exportable.
+     * @param data Una lista de objetos de cualquier tipo que implementen la
+     * interfaz Exportable.
      * @param title El título principal que se mostrará en el documento PDF.
-     * @return Un {@link ByteArrayOutputStream} que contiene el archivo PDF en formato binario.
-     * @throws DocumentException Si ocurre un error relacionado con la estructura del documento PDF.
-     * @throws IOException      Si ocurre un error de entrada/salida al leer el logo o escribir el PDF.
+     * @return Un {@link ByteArrayOutputStream} que contiene el archivo PDF en
+     * formato binario.
+     * @throws DocumentException Si ocurre un error relacionado con la
+     * estructura del documento PDF.
+     * @throws IOException Si ocurre un error de entrada/salida al leer el logo
+     * o escribir el PDF.
      */
     public ByteArrayOutputStream exportToPdf(List<? extends Exportable> data, String title) throws DocumentException, IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -229,7 +235,7 @@ public class ExporterService {
             Paragraph companyPhone = new Paragraph("Teléfono: 8645931407", SUBTITLE_FONT);
             companyPhone.setAlignment(Element.ALIGN_RIGHT);
             titleCell.addElement(companyPhone);
-            
+
             // Agregar el título del reporte
             Paragraph titleParagraph = new Paragraph(title, SUBTITLE_FONT);
             titleParagraph.setAlignment(Element.ALIGN_RIGHT);

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.security.exception;
+package com.gestionremodelacion.gestion.security.exception;
 
 public class TokenRefreshException extends RuntimeException {
 

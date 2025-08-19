@@ -1,15 +1,15 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.util.Collections;
 import java.util.Set;
+
 public class UserResponse {
+
     private Long id;
     private String username;
     private boolean enabled;
     private Set<RoleResponse> roles; // Changed to Set<RoleResponse>
     // No incluyas autoridades/permisos directamente aquí, ya que se obtienen a través de los roles.
-
-
 
     // Getters and Setters
     public Long getId() {
@@ -51,5 +51,4 @@ public class UserResponse {
         this.enabled = enabled;
     }
 
-    
 }

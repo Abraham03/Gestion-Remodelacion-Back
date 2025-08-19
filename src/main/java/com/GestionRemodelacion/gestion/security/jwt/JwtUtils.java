@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.security.jwt;
+package com.gestionremodelacion.gestion.security.jwt;
 
 import java.security.Key;
 import java.util.Date;
@@ -11,8 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.GestionRemodelacion.gestion.config.JwtProperties;
-import com.GestionRemodelacion.gestion.service.impl.UserDetailsImpl;
+import com.gestionremodelacion.gestion.config.JwtProperties;
+import com.gestionremodelacion.gestion.service.impl.UserDetailsImpl;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -42,10 +42,10 @@ public class JwtUtils {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return buildToken(
-            userPrincipal.getUsername(), 
-            userPrincipal.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())
+                userPrincipal.getUsername(),
+                userPrincipal.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList())
         );
     }
 
@@ -55,13 +55,13 @@ public class JwtUtils {
 
     private String buildToken(String subject, List<String> roles) {
         return Jwts.builder()
-            .setSubject(subject)
-            .claim("roles", roles)
-            .setIssuer(jwtProperties.getIssuer())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMs()))
-            .signWith(key)
-            .compact();
+                .setSubject(subject)
+                .claim("roles", roles)
+                .setIssuer(jwtProperties.getIssuer())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMs()))
+                .signWith(key)
+                .compact();
     }
 
     public String getUserNameFromJwtToken(String token) {
@@ -90,7 +90,7 @@ public class JwtUtils {
                 .getBody();
     }
 
-        // ✅ Nuevo método para obtener la fecha de expiración de un token caducado
+    // ✅ Nuevo método para obtener la fecha de expiración de un token caducado
     public Date getExpirationDateFromExpiredToken(String token) {
         try {
             // Intenta parsear el token, si falla con ExpiredJwtException, decodifica el cuerpo

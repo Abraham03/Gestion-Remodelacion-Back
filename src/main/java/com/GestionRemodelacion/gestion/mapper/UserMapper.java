@@ -1,16 +1,16 @@
-package com.GestionRemodelacion.gestion.mapper;
+package com.gestionremodelacion.gestion.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.GestionRemodelacion.gestion.dto.request.UserRequest;
-import com.GestionRemodelacion.gestion.dto.response.UserResponse;
-import com.GestionRemodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.dto.request.UserRequest;
+import com.gestionremodelacion.gestion.dto.response.UserResponse;
+import com.gestionremodelacion.gestion.model.User;
 
 @Mapper(componentModel = "spring", uses = {RoleMapper.class}) // Añadir uses para RoleMapper
 public abstract class UserMapper {
- 
+
     @Autowired
     protected RoleMapper roleMapper; // Inyectar RoleMapper
 

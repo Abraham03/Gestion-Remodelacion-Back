@@ -1,5 +1,4 @@
-package com.GestionRemodelacion.gestion.horastrabajadas.service;
-
+package com.gestionremodelacion.gestion.horastrabajadas.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,13 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasExportDTO;
-import com.GestionRemodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
-import com.GestionRemodelacion.gestion.horastrabajadas.model.HorasTrabajadas;
-import com.GestionRemodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
-import com.GestionRemodelacion.gestion.mapper.HorasTrabajadasMapper;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.request.HorasTrabajadasRequest;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasExportDTO;
+import com.gestionremodelacion.gestion.horastrabajadas.dto.response.HorasTrabajadasResponse;
+import com.gestionremodelacion.gestion.horastrabajadas.model.HorasTrabajadas;
+import com.gestionremodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
+import com.gestionremodelacion.gestion.mapper.HorasTrabajadasMapper;
 
 @Service
 public class HorasTrabajadasService {
@@ -27,17 +26,17 @@ public class HorasTrabajadasService {
     private final HorasTrabajadasMapper horasTrabajadasMapper;
 
     public HorasTrabajadasService(HorasTrabajadasRepository horasTrabajadasRepository,
-                                  HorasTrabajadasMapper horasTrabajadasMapper) {
+            HorasTrabajadasMapper horasTrabajadasMapper) {
         this.horasTrabajadasRepository = horasTrabajadasRepository;
         this.horasTrabajadasMapper = horasTrabajadasMapper;
     }
 
     @Transactional(readOnly = true)
     public Page<HorasTrabajadasResponse> getAllHorasTrabajadas(Pageable pageable, String filter) {
-         if (filter != null && !filter.trim().isEmpty()) {
+        if (filter != null && !filter.trim().isEmpty()) {
             return horasTrabajadasRepository.findByFilterWithDetails(filter, pageable);
         } else {
-            return  horasTrabajadasRepository.findAllWithDetails(pageable);
+            return horasTrabajadasRepository.findAllWithDetails(pageable);
         }
     }
 
@@ -50,7 +49,7 @@ public class HorasTrabajadasService {
 
     @Transactional
     public HorasTrabajadasResponse createHorasTrabajadas(HorasTrabajadasRequest horasTrabajadasRequest) {
-        HorasTrabajadas horasTrabajadas = horasTrabajadasMapper.toHorasTrabajadas(horasTrabajadasRequest); 
+        HorasTrabajadas horasTrabajadas = horasTrabajadasMapper.toHorasTrabajadas(horasTrabajadasRequest);
         HorasTrabajadas savedHorasTrabajadas = horasTrabajadasRepository.save(horasTrabajadas);
         return horasTrabajadasMapper.toHorasTrabajadasResponse(savedHorasTrabajadas);
     }
@@ -74,7 +73,7 @@ public class HorasTrabajadasService {
         return new ApiResponse<>(HttpStatus.OK.value(), "Registro de horas trabajadas eliminado exitosamente.", null);
     }
 
-   @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public List<HorasTrabajadasExportDTO> findHorasTrabajadasForExport(String filter, String sort) {
         Sort sortObj = Sort.by(Sort.Direction.DESC, "fecha"); // Ordenar por fecha por defecto
         if (sort != null && !sort.isEmpty()) {
@@ -96,6 +95,6 @@ public class HorasTrabajadasService {
         return horas.stream()
                 .map(HorasTrabajadasExportDTO::new)
                 .collect(Collectors.toList());
-    }    
+    }
 
 }

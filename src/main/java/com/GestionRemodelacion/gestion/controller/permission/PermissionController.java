@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.controller.permission;
+package com.gestionremodelacion.gestion.controller.permission;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,17 +14,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.GestionRemodelacion.gestion.dto.request.PermissionRequest;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.dto.response.PermissionResponse;
-import com.GestionRemodelacion.gestion.service.permission.PermissionService;
+import com.gestionremodelacion.gestion.dto.request.PermissionRequest;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.dto.response.PermissionResponse;
+import com.gestionremodelacion.gestion.service.permission.PermissionService;
 
 import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/api/permissions")
 public class PermissionController {
-
 
     private final PermissionService permissionService;
 

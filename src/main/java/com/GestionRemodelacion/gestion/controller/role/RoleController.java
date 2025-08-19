@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.controller.role;
+package com.gestionremodelacion.gestion.controller.role;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,34 +15,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.dto.request.RoleRequest;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.dto.response.RoleResponse;
-import com.GestionRemodelacion.gestion.service.role.RoleService;
+import com.gestionremodelacion.gestion.dto.request.RoleRequest;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.dto.response.RoleResponse;
+import com.gestionremodelacion.gestion.service.role.RoleService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/roles")
 public class RoleController {
+
     private final RoleService roleService;
 
     public RoleController(RoleService roleService) {
         this.roleService = roleService;
     }
 
-@GetMapping
-@PreAuthorize("hasAuthority('ROLE_READ')") 
-public ResponseEntity<ApiResponse<Page<RoleResponse>>> getAllRoles(
-    @PageableDefault(size = 10, page = 0, sort = "id") Pageable pageable,
-    @RequestParam(required = false) String searchTerm) { // Add this parameter
-    
-    // Pass searchTerm to the service layer
-    Page<RoleResponse> rolesResponse = roleService.findAll(pageable, searchTerm);  
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_READ')")
+    public ResponseEntity<ApiResponse<Page<RoleResponse>>> getAllRoles(
+            @PageableDefault(size = 10, page = 0, sort = "id") Pageable pageable,
+            @RequestParam(required = false) String searchTerm) { // Add this parameter
 
-    return ResponseEntity.ok(ApiResponse.success(rolesResponse));
-}
+        // Pass searchTerm to the service layer
+        Page<RoleResponse> rolesResponse = roleService.findAll(pageable, searchTerm);
 
+        return ResponseEntity.ok(ApiResponse.success(rolesResponse));
+    }
 
     @GetMapping("/{id}") // NEW: Get Role by ID
     @PreAuthorize("hasAuthority('ROLE_READ')")
@@ -52,7 +52,7 @@ public ResponseEntity<ApiResponse<Page<RoleResponse>>> getAllRoles(
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_CREATE')") 
+    @PreAuthorize("hasAuthority('ROLE_CREATE')")
     public ResponseEntity<ApiResponse<RoleResponse>> createRole(@Valid @RequestBody RoleRequest role) {
         RoleResponse createdRole = roleService.createRole(role);
         return ResponseEntity.ok(ApiResponse.success(createdRole));
@@ -65,13 +65,11 @@ public ResponseEntity<ApiResponse<Page<RoleResponse>>> getAllRoles(
         return ResponseEntity.ok(ApiResponse.success(updatedRole));
     }
 
-
     @DeleteMapping("/{id}") // NEW: Delete Role by ID
     @PreAuthorize("hasAuthority('ROLE_DELETE')")
     public ResponseEntity<ApiResponse<Void>> deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-  
 
 }

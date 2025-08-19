@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.impl;
+package com.gestionremodelacion.gestion.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,11 +8,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestionRemodelacion.gestion.model.User;
-import com.GestionRemodelacion.gestion.repository.UserRepository;
+import com.gestionremodelacion.gestion.model.User;
+import com.gestionremodelacion.gestion.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     private static final Logger log = LoggerFactory.getLogger(UserDetailsServiceImpl.class); // Instancia del logger
 
     private final UserRepository userRepository;
@@ -30,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     log.warn("User not found: {}", username); // Mover el log aquí
                     return new UsernameNotFoundException("Usuario no encontrado: " + username);
                 });
-        log.info("User {} found in database.", username); 
+        log.info("User {} found in database.", username);
 
         return UserDetailsImpl.build(user);
     }

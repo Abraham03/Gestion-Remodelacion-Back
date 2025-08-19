@@ -1,7 +1,6 @@
-package com.GestionRemodelacion.gestion.cliente.dto.request;
+package com.gestionremodelacion.gestion.cliente.dto.request;
 
 import java.time.LocalDateTime;
-
 
 public class ClienteRequest {
 
@@ -14,7 +13,6 @@ public class ClienteRequest {
     public ClienteRequest() {
     }
 
-    
     public String getNombreCliente() {
         return nombreCliente;
     }

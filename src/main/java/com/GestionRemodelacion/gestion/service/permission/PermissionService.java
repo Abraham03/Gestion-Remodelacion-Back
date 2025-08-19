@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.permission;
+package com.gestionremodelacion.gestion.service.permission;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,12 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.dto.request.PermissionRequest;
-import com.GestionRemodelacion.gestion.dto.response.PermissionResponse;
-import com.GestionRemodelacion.gestion.mapper.PermissionMapper;
-import com.GestionRemodelacion.gestion.model.Permission;
-import com.GestionRemodelacion.gestion.repository.PermissionRepository;
-
+import com.gestionremodelacion.gestion.dto.request.PermissionRequest;
+import com.gestionremodelacion.gestion.dto.response.PermissionResponse;
+import com.gestionremodelacion.gestion.mapper.PermissionMapper;
+import com.gestionremodelacion.gestion.model.Permission;
+import com.gestionremodelacion.gestion.repository.PermissionRepository;
 
 @Service
 public class PermissionService {
@@ -25,7 +24,7 @@ public class PermissionService {
         this.permissionMapper = permissionMapper;
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Page<PermissionResponse> findAll(Pageable pageable) {
         return permissionRepository.findAll(pageable)
                 .map(permissionMapper::toPermissionResponse);

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.service.dashboard;
+package com.gestionremodelacion.gestion.service.dashboard;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,32 +8,32 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.GestionRemodelacion.gestion.cliente.repository.ClienteRepository;
-import com.GestionRemodelacion.gestion.dto.response.DashboardClientesResponse;
-import com.GestionRemodelacion.gestion.dto.response.DashboardSummaryResponse;
-import com.GestionRemodelacion.gestion.empleado.repository.EmpleadoRepository;
-import com.GestionRemodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
-import com.GestionRemodelacion.gestion.proyecto.repository.ProyectoRepository;
+import com.gestionremodelacion.gestion.cliente.repository.ClienteRepository;
+import com.gestionremodelacion.gestion.dto.response.DashboardClientesResponse;
+import com.gestionremodelacion.gestion.dto.response.DashboardSummaryResponse;
+import com.gestionremodelacion.gestion.empleado.repository.EmpleadoRepository;
+import com.gestionremodelacion.gestion.horastrabajadas.repository.HorasTrabajadasRepository;
+import com.gestionremodelacion.gestion.proyecto.repository.ProyectoRepository;
 
 @Service
 public class DashboardService {
 
-  private final ProyectoRepository proyectoRepository;
-  private final EmpleadoRepository empleadoRepository;
-  private final HorasTrabajadasRepository horasTrabajadasRepository;
-  private final ClienteRepository clienteRepository;
+    private final ProyectoRepository proyectoRepository;
+    private final EmpleadoRepository empleadoRepository;
+    private final HorasTrabajadasRepository horasTrabajadasRepository;
+    private final ClienteRepository clienteRepository;
 
-  public DashboardService(ProyectoRepository proyectoRepository, EmpleadoRepository empleadoRepository, HorasTrabajadasRepository horasTrabajadasRepository, ClienteRepository clienteRepository) {
-    this.proyectoRepository = proyectoRepository;
-    this.empleadoRepository = empleadoRepository;
-    this.horasTrabajadasRepository = horasTrabajadasRepository;
-    this.clienteRepository = clienteRepository;
-  }
+    public DashboardService(ProyectoRepository proyectoRepository, EmpleadoRepository empleadoRepository, HorasTrabajadasRepository horasTrabajadasRepository, ClienteRepository clienteRepository) {
+        this.proyectoRepository = proyectoRepository;
+        this.empleadoRepository = empleadoRepository;
+        this.horasTrabajadasRepository = horasTrabajadasRepository;
+        this.clienteRepository = clienteRepository;
+    }
 
- @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public DashboardSummaryResponse getDashboardSummary(Integer year, Integer month) {
         int targetYear = (year != null) ? year : LocalDate.now().getYear();
-        
+
         // Declaramos variables
         Long totalProyectos;
         BigDecimal montoRecibido;
@@ -73,9 +73,9 @@ public class DashboardService {
         List<Object[]> empleadosPorRol = empleadoRepository.countEmpleadosByRol();
 
         return new DashboardSummaryResponse(
-            totalProyectos, empleadosActivos, balanceFinanciero, montoRecibido, costoMateriales, otrosGastos,
-            empleadosPorRol, horasPorProyecto, horasPorEmpleado, proyectosPorEstado,
-            horasPorEmpleadoProyecto, costoPromedioPorHora
+                totalProyectos, empleadosActivos, balanceFinanciero, montoRecibido, costoMateriales, otrosGastos,
+                empleadosPorRol, horasPorProyecto, horasPorEmpleado, proyectosPorEstado,
+                horasPorEmpleadoProyecto, costoPromedioPorHora
         );
     }
 
@@ -85,10 +85,9 @@ public class DashboardService {
 
         // Para este gráfico, siempre queremos los 12 meses del año seleccionado
         List<Object[]> clientesPorMes = clienteRepository.countClientesByMonthForYear(targetYear);
-        
-        return new DashboardClientesResponse(clientesPorMes);
-    }    
 
+        return new DashboardClientesResponse(clientesPorMes);
+    }
 
     // ✅ CAMBIO: Nuevo método para obtener solo la lista de años.
     @Transactional(readOnly = true)

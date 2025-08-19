@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.cliente.controller;
+package com.gestionremodelacion.gestion.cliente.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.GestionRemodelacion.gestion.cliente.dto.request.ClienteRequest;
-import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteExportDTO;
-import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
-import com.GestionRemodelacion.gestion.cliente.service.ClienteService;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.export.ExporterService;
+import com.gestionremodelacion.gestion.cliente.dto.request.ClienteRequest;
+import com.gestionremodelacion.gestion.cliente.dto.response.ClienteExportDTO;
+import com.gestionremodelacion.gestion.cliente.dto.response.ClienteResponse;
+import com.gestionremodelacion.gestion.cliente.service.ClienteService;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.export.ExporterService;
 import com.itextpdf.text.DocumentException;
 
 import jakarta.validation.Valid;
@@ -44,9 +44,9 @@ public class ClienteController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('CLIENTE_READ')") 
-    public ResponseEntity<ApiResponse<Page<ClienteResponse>>> getAllClientes( Pageable pageable,
-        @RequestParam(name = "filter", required = false) String filter) {
+    @PreAuthorize("hasAuthority('CLIENTE_READ')")
+    public ResponseEntity<ApiResponse<Page<ClienteResponse>>> getAllClientes(Pageable pageable,
+            @RequestParam(name = "filter", required = false) String filter) {
         Page<ClienteResponse> clientesPage = clienteService.getAllClientes(pageable, filter);
         return ResponseEntity.ok(ApiResponse.success(clientesPage));
     }
@@ -83,8 +83,8 @@ public class ClienteController {
     @GetMapping("/export/excel")
     @PreAuthorize("hasAuthority('CLIENTE_READ')")
     public ResponseEntity<byte[]> exportClientsToExcel(
-        @RequestParam(name = "filter", required = false) String filter,
-        @RequestParam(name = "sort", required = false) String sort) throws IOException {
+            @RequestParam(name = "filter", required = false) String filter,
+            @RequestParam(name = "sort", required = false) String sort) throws IOException {
 
         List<ClienteExportDTO> clientes = clienteService.findClientesForExport(filter, sort);
         ByteArrayOutputStream excelStream = exporterService.exportToExcel(clientes, "Reporte de Clientes");
@@ -100,14 +100,14 @@ public class ClienteController {
     @GetMapping("/export/pdf")
     @PreAuthorize("hasAuthority('CLIENTE_READ')")
     public ResponseEntity<byte[]> exportClientsToPdf(
-        @RequestParam(name = "filter", required = false) String filter,
-        @RequestParam(name = "sort", required = false) String sort) throws DocumentException, IOException {
+            @RequestParam(name = "filter", required = false) String filter,
+            @RequestParam(name = "sort", required = false) String sort) throws DocumentException, IOException {
 
         List<ClienteExportDTO> clientes = clienteService.findClientesForExport(filter, sort);
         if (clientes.isEmpty()) {
-        // Devuelve una respuesta HTTP 404 Not Found o 204 No Content
-        return ResponseEntity.notFound().build(); 
-    }
+            // Devuelve una respuesta HTTP 404 Not Found o 204 No Content
+            return ResponseEntity.notFound().build();
+        }
         ByteArrayOutputStream pdfStream = exporterService.exportToPdf(clientes, "Reporte de Clientes");
 
         HttpHeaders headers = new HttpHeaders();
@@ -116,5 +116,5 @@ public class ClienteController {
 
         return ResponseEntity.ok().headers(headers).body(pdfStream.toByteArray());
     }
-    
+
 }

@@ -1,9 +1,10 @@
-package com.GestionRemodelacion.gestion.dto.request;
+package com.gestionremodelacion.gestion.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class PermissionRequest {
+
     private Long id;
 
     @NotBlank(message = "Permission name cannot be empty")
@@ -14,7 +15,8 @@ public class PermissionRequest {
     private String description;
 
     // Constructors
-    public PermissionRequest() {}
+    public PermissionRequest() {
+    }
 
     public PermissionRequest(Long id, String name, String description) {
         this.id = id;

@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.cliente.service;
+package com.gestionremodelacion.gestion.cliente.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.GestionRemodelacion.gestion.cliente.dto.request.ClienteRequest;
-import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteExportDTO;
-import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
-import com.GestionRemodelacion.gestion.cliente.model.Cliente;
-import com.GestionRemodelacion.gestion.cliente.repository.ClienteRepository;
-import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.mapper.ClienteMapper;
+import com.gestionremodelacion.gestion.cliente.dto.request.ClienteRequest;
+import com.gestionremodelacion.gestion.cliente.dto.response.ClienteExportDTO;
+import com.gestionremodelacion.gestion.cliente.dto.response.ClienteResponse;
+import com.gestionremodelacion.gestion.cliente.model.Cliente;
+import com.gestionremodelacion.gestion.cliente.repository.ClienteRepository;
+import com.gestionremodelacion.gestion.dto.response.ApiResponse;
+import com.gestionremodelacion.gestion.mapper.ClienteMapper;
 
 @Service
 public class ClienteService {
@@ -60,7 +60,7 @@ public class ClienteService {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente no encontrado con ID: " + id));
 
-        clienteMapper.updateClienteFromRequest(clienteRequest, cliente);        
+        clienteMapper.updateClienteFromRequest(clienteRequest, cliente);
         Cliente updatedCliente = clienteRepository.save(cliente);
         return clienteMapper.toClienteResponse(updatedCliente);
     }
@@ -97,6 +97,6 @@ public class ClienteService {
         return clientes.stream()
                 .map(ClienteExportDTO::new)
                 .collect(Collectors.toList());
-    }    
+    }
 
 }

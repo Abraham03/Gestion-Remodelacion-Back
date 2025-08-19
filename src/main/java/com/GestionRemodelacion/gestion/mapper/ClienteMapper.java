@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.mapper;
+package com.gestionremodelacion.gestion.mapper;
 
 import java.util.List;
 
@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.GestionRemodelacion.gestion.cliente.dto.request.ClienteRequest;
-import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
-import com.GestionRemodelacion.gestion.cliente.model.Cliente;
+import com.gestionremodelacion.gestion.cliente.dto.request.ClienteRequest;
+import com.gestionremodelacion.gestion.cliente.dto.response.ClienteResponse;
+import com.gestionremodelacion.gestion.cliente.model.Cliente;
 
 @Mapper(componentModel = "spring")
 public interface ClienteMapper {

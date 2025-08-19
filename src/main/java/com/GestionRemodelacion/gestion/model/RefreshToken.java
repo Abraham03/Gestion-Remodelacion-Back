@@ -1,4 +1,4 @@
-package com.GestionRemodelacion.gestion.model;
+package com.gestionremodelacion.gestion.model;
 
 import java.time.Instant;
 
@@ -38,7 +38,8 @@ public class RefreshToken {
         this.used = used;
     }
 
-    public RefreshToken() {}
+    public RefreshToken() {
+    }
 
     public Long getId() {
         return id;

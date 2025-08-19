@@ -1,16 +1,15 @@
-package com.GestionRemodelacion.gestion.dto.response;
+package com.gestionremodelacion.gestion.dto.response;
 
 import java.util.Set;
-
 
 public class RoleResponse {
 
     private Long id;
     private String name;
     private String description;
-    private Set<PermissionResponse> permissions;  
+    private Set<PermissionResponse> permissions;
 
-     public RoleResponse(Long id, String name, String description, Set<PermissionResponse> permissions) {
+    public RoleResponse(Long id, String name, String description, Set<PermissionResponse> permissions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -48,7 +47,5 @@ public class RoleResponse {
     public void setPermissions(Set<PermissionResponse> permissions) {
         this.permissions = permissions;
     }
-    
-    
 
 }
