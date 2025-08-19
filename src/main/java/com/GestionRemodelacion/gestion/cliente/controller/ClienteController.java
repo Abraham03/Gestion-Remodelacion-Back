@@ -26,7 +26,7 @@ import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteExportDTO;
 import com.GestionRemodelacion.gestion.cliente.dto.response.ClienteResponse;
 import com.GestionRemodelacion.gestion.cliente.service.ClienteService;
 import com.GestionRemodelacion.gestion.dto.response.ApiResponse;
-import com.GestionRemodelacion.gestion.proyecto.service.ProyectoService;
+import com.GestionRemodelacion.gestion.export.ExporterService;
 import com.itextpdf.text.DocumentException;
 
 import jakarta.validation.Valid;
@@ -36,11 +36,11 @@ import jakarta.validation.Valid;
 public class ClienteController {
 
     private final ClienteService clienteService;
-    private final ProyectoService proyectoService;
+    private final ExporterService exporterService;
 
-    public ClienteController(ClienteService clienteService, ProyectoService proyectoService) {
+    public ClienteController(ClienteService clienteService, ExporterService exporterService) {
         this.clienteService = clienteService;
-        this.proyectoService = proyectoService;
+        this.exporterService = exporterService;
     }
 
     @GetMapping
@@ -86,8 +86,8 @@ public class ClienteController {
         @RequestParam(name = "filter", required = false) String filter,
         @RequestParam(name = "sort", required = false) String sort) throws IOException {
 
-
-        ByteArrayOutputStream excelStream = proyectoService.exportToExcel(filter, sort);
+        List<ClienteExportDTO> clientes = clienteService.findClientesForExport(filter, sort);
+        ByteArrayOutputStream excelStream = exporterService.exportToExcel(clientes, "Reporte de Clientes");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Clientes.xlsx");
@@ -108,7 +108,7 @@ public class ClienteController {
         // Devuelve una respuesta HTTP 404 Not Found o 204 No Content
         return ResponseEntity.notFound().build(); 
     }
-        ByteArrayOutputStream pdfStream = proyectoService.exportToPdf(filter, sort);
+        ByteArrayOutputStream pdfStream = exporterService.exportToPdf(clientes, "Reporte de Clientes");
 
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Reporte_Clientes.pdf");
